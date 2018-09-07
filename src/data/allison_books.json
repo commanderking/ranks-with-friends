@@ -1,13 +1,17 @@
 {
-	"friend": "Allison",
-	"books": [{
-			"The Once and Future King": "S"
-		},
-		{
-			"Billy Budd": "C"
-		},
-		{
-			"Rebecca": "A"
-		}
-	]
+  "friend": "Allison",
+  "books": [
+    {
+      "name": "The Once and Future King",
+      "score": "S"
+    },
+    {
+      "name": "Billy Budd",
+      "score": "C"
+    },
+    {
+      "name": "Rebecca",
+      "score": "A"
+    }
+  ]
 }
