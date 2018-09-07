@@ -14,8 +14,9 @@ const width = +svg.attr("width");
 const height = +svg.attr("height");
 
 const margin = {top: 15, right: 50, bottom: 0, left: 200};
-const rankings = ["D", "D+", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+", "S-", "S"]
+const rankings = ["D-", "D", "D+", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+", "S-", "S"]
 const xScale = d3.scaleBand().rangeRound([0, width-margin.right]).padding(0.1),
+      yScale = d3.scaleBand().rangeRound([0, height-margin.top]).padding(0.1),
       miniScaler = d3.scaleLinear();
       ratingScale = d3.scaleBand().range([0,1]).domain(rankings);
 
@@ -29,10 +30,18 @@ d3.json("data/allison_books.json").then(function(data1) {
     console.log(data);
     const friendList = d3.entries(data).map(function(d) { return d.value.friend; });
     console.log(friendList);
-    let bookList = new Set();
+    let bookList = {};
     data.forEach(function(d) {
-      d3.entries(d.books).map(function(book) { bookList.add(book.value.name); });
-    })
+      let entries = d3.entries(d.books);
+      entries.map(function(book) {
+        if (bookList[book.value.name]) {
+          bookList[book.value.name].push({'friend': d.friend, 'rating': book.value.score})
+        } else {
+          bookList[book.value.name] = [{'friend': d.friend, 'rating': book.value.score}]
+        }
+      });
+    });
+    console.log(bookList);
 
     xScale.domain(friendList);
 
@@ -44,10 +53,19 @@ d3.json("data/allison_books.json").then(function(data1) {
          .attr('class', 'table-header')
          .attr('x', function(d) { return xScale(d)})
          .text(function(d) { return d});
+
+    miniScaler.range(0, height/bookList.length);
+    miniScaler.domain([0,1]); // could get max....
+    yScale.domain(bookList); // need to sort this...
+
   });
 
 });
 
+function getRankingFromScore(score) {
+  const step = ratingScale.step()
+  return rankings[Math.round(score / step)]
+}
 
 
 </script>
