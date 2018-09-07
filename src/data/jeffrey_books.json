@@ -1,0 +1,13 @@
+{
+	"friend": "Jeffrey",
+	"books": [{
+			"The Once and Future King": "A+"
+		},
+		{
+			"Billy Budd": "C+"
+		},
+		{
+			"Rebecca": "B+"
+		}
+	]
+}
