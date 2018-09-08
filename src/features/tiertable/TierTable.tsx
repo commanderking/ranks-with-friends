@@ -3,9 +3,12 @@ import Table from "rc-table";
 import TestData from "./TierTableTestData";
 import _ from "lodash";
 import { createBookScoresHash, toCategoryScores } from "./tierTableUtils";
+import { TierTableDataRow, FriendsDataType } from "./TierTableTypes";
 
+// MOCK Test Data for Now
+// TODO: Make API call to get actual data
 const hashedDataByBook = createBookScoresHash(TestData);
-const data = _.map(hashedDataByBook, toCategoryScores);
+const data: TierTableDataRow[] = _.map(hashedDataByBook, toCategoryScores);
 
 const TierTable = () => {
   const sortedData = _.sortBy(data, "numericScore").reverse();
@@ -17,12 +20,11 @@ const TierTable = () => {
       title: "Book",
       width: 300
     },
-    ...TestData.map(friendData => {
+    ...TestData.map((friendData: FriendsDataType) => {
       return {
         dataIndex: friendData.friend,
         key: friendData.friend,
         render: (value: string) => {
-          console.log("value", value);
           return (
             <div
               style={{

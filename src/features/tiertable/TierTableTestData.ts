@@ -27,11 +27,11 @@ const Tiers: FriendsDataType[] = [
       },
       {
         name: "Billy Budd",
-        score: "B+"
+        score: "C+"
       },
       {
         name: "Rebecca",
-        score: "C+"
+        score: "B+"
       }
     ]
   },

@@ -1,5 +1,4 @@
-// @ts-ignore: Unreachable code error
-export const tiers: TiersType[] = [
+export const tiers: Tiers[] = [
   "D-",
   "D",
   "D+",
