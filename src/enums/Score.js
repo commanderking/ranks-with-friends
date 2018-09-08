@@ -1,3 +1,4 @@
+// TODO: Only color being used for now, possibly can be removed for more dynamic color picker
 const ScoreEnum = {
   S: {
     name: "S",
