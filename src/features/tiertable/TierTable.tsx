@@ -2,7 +2,6 @@ import React from "react";
 import Table from "rc-table";
 import TestData from "./TierTableTestData";
 import _ from "lodash";
-import ScoreEnum from "../../enums/Score";
 import { createBookScoresHash, toCategoryScores } from "./tierTableUtils";
 
 const hashedDataByBook = createBookScoresHash(TestData);
@@ -13,37 +12,37 @@ const TierTable = () => {
 
   const columns = [
     {
-      title: "Book",
       dataIndex: "name",
       key: "name",
+      title: "Book",
       width: 300
     },
     ...TestData.map(friendData => {
       return {
-        title: friendData.friend,
         dataIndex: friendData.friend,
         key: friendData.friend,
-        width: 100,
-        render: (value, row) => {
+        render: (value: string) => {
+          console.log("value", value);
           return (
             <div
               style={{
-                backgroundColor: ScoreEnum[row[friendData.friend]].color,
-                padding: "20px",
+                color: "black",
                 fontSize: "20px",
-                color: "white"
+                padding: "20px"
               }}
             >
               {value}
             </div>
           );
-        }
+        },
+        title: friendData.friend,
+        width: 100
       };
     }),
     {
+      dataIndex: "overallScore",
+      key: "overallScore",
       title: "Numeric Score",
-      dataIndex: "numericScore",
-      key: "numericScore",
       width: 100
     }
   ];

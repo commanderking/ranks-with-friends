@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import TierTable from "./features/tiertable/TierTable.js";
+import TierTable from "./features/tiertable/TierTable.tsx";
 
 class App extends Component {
   render() {
