@@ -32,6 +32,23 @@ const Tiers = [
         score: "B+"
       }
     ]
+  },
+  {
+    friend: "Lin",
+    books: [
+      {
+        name: "The Once and Future King",
+        score: "B+"
+      },
+      {
+        name: "Billy Budd",
+        score: "D-"
+      },
+      {
+        name: "Rebecca",
+        score: "D-"
+      }
+    ]
   }
 ];
 
