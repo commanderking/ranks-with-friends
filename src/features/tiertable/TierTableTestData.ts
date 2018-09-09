@@ -1,4 +1,6 @@
-const Tiers = [
+import { FriendsDataType } from "./TierTableTypes";
+
+const Tiers: FriendsDataType[] = [
   {
     friend: "Allison",
     books: [
