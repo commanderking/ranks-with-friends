@@ -4,7 +4,9 @@ import TestData from "./TierTableTestData";
 import _ from "lodash";
 import { createBookScoresHash, toCategoryScores } from "./tierTableUtils";
 import { TierTableDataRow, FriendsDataType } from "./TierTableTypes";
-
+import { QueryRenderer } from "react-relay";
+import graphql from "babel-plugin-relay/macro";
+import GraphQLEnvironment from "../../Environment";
 // MOCK Test Data for Now
 // TODO: Make API call to get actual data
 const hashedDataByBook = createBookScoresHash(TestData);
@@ -52,6 +54,26 @@ const TierTable = () => {
   return (
     <div>
       <h1>Tier Table</h1>
+      <QueryRenderer
+        environment={GraphQLEnvironment}
+        query={graphql`
+          query UserQuery {
+            viewer {
+              id
+            }
+          }
+        `}
+        variables={{}}
+        render={({ error, props }) => {
+          if (error) {
+            return <div>Error!</div>;
+          }
+          if (!props) {
+            return <div>Loading...</div>;
+          }
+          return <div>User ID: {props.viewer.id}</div>;
+        }}
+      />
       <Table columns={columns} data={sortedData} />
     </div>
   );
