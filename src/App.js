@@ -6,7 +6,7 @@ import { ApolloProvider } from "react-apollo";
 import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
 
-// TODO: Update client based on rul
+// TODO: Update client based on graphql url
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql"
 });

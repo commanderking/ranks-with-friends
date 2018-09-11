@@ -6,24 +6,23 @@ import { TierTableDataRow, FriendsDataType } from "./TierTableTypes";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
-const toTableData = (backendData: FriendsDataType[]) => {
-  const hashedDataByBook = createBookScoresHash(backendData);
+const toTableData = (tiersActivityData: FriendsDataType[]) => {
+  const hashedDataByBook = createBookScoresHash(tiersActivityData);
   const data: TierTableDataRow[] = _.map(hashedDataByBook, toCategoryScores);
-  const sortedData = _.sortBy(data, "numericScore").reverse();
-  return sortedData;
+  return _.sortBy(data, "numericScore").reverse();
 };
 
-const createColumns = (backendData: FriendsDataType[]) => [
+const createColumns = (tiersActivityData: FriendsDataType[]) => [
   {
     dataIndex: "name",
     key: "name",
     title: "Book",
     width: 300
   },
-  ...backendData.map((friendData: FriendsDataType) => {
+  ...tiersActivityData.map((activityData: FriendsDataType) => {
     return {
-      dataIndex: friendData.friend,
-      key: friendData.friend,
+      dataIndex: activityData.friend,
+      key: activityData.friend,
       render: (value: string) => {
         return (
           <div
@@ -37,7 +36,7 @@ const createColumns = (backendData: FriendsDataType[]) => [
           </div>
         );
       },
-      title: friendData.friend,
+      title: activityData.friend,
       width: 100
     };
   }),
@@ -50,7 +49,6 @@ const createColumns = (backendData: FriendsDataType[]) => [
 ];
 
 const TierTable = () => {
-  // const sortedData = _.sortBy(data, "numericScore").reverse();
   return (
     <Query
       query={gql`
