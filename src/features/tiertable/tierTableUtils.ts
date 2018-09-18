@@ -1,12 +1,12 @@
 import { scaleBand } from "d3";
 import _ from "lodash";
 import {
-  FriendsDataType,
-  FriendScore,
-  ScoresPerCategoryType,
+  FriendRating,
+  RatingsPerCategoryType,
   CategoryNameAndScores,
   TierTableDataRow
 } from "./TierTableTypes";
+import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
 
 import { tiers, Tiers } from "../../enums/Tiers";
 
@@ -20,41 +20,54 @@ export const getRankingFromScore = (score: number): Tiers => {
 };
 
 export const createBookScoresHash = (
-  friendsData: FriendsDataType[]
-): ScoresPerCategoryType => {
-  const scoresPerBook = {};
-  friendsData.map((friendData: FriendsDataType) => {
-    friendData.ratings.map(rating => {
-      const { name } = rating;
-      if (scoresPerBook[name]) {
-        scoresPerBook[name].scoresByFriend.push({
-          [friendData.friend]: rating.score
-        });
-      } else {
-        scoresPerBook[name] = {
-          name,
-          scoresByFriend: [{ [friendData.friend]: rating.score }]
-        };
+  activity: Activity
+): RatingsPerCategoryType => {
+  const namesByItem = activity.items.reduce((accumulator, item) => {
+    return {
+      ...accumulator,
+      [item.itemId]: {
+        id: item.itemId,
+        name: item.name,
+        friendRatings: {}
       }
-    });
-  });
-  console.log("scoresperBook", scoresPerBook);
-  return scoresPerBook;
+    };
+
+    return accumulator;
+  }, {});
+  // TODO: abstract reduce functions to make more readable
+  const ratingsByItem = activity.activityRatings.reduce(
+    (byItem, activityRating: RatingWithFriendInfo) => {
+      const ratingForItem = activityRating.itemRatings.reduce(
+        (ratingsByItemForFriend, item) => {
+          if (ratingsByItemForFriend[item.itemId]) {
+            ratingsByItemForFriend[item.itemId] = {
+              ...ratingsByItemForFriend[item.itemId],
+              friendRatings: {
+                ...ratingsByItemForFriend[item.itemId].friendRatings,
+                [activityRating.friendId]: item.rating
+              }
+            };
+          }
+          return byItem;
+        },
+        byItem
+      );
+      return ratingForItem;
+    },
+    namesByItem
+  );
+  return ratingsByItem;
 };
 
-export const sumFriendScores = (
-  total: number,
-  friendScore: FriendScore
-): number => {
-  const letterValue: string = _.values(friendScore)[0];
-  const numericScore = getNumericScoreforRating(letterValue);
+export const sumFriendScores = (total: number, FriendRating: Tiers): number => {
+  const numericScore = getNumericScoreforRating(FriendRating);
   return numericScore ? total + numericScore : total;
 };
 
 export const getFriendScoresForBook = (
-  result: FriendScore,
-  value: FriendScore
-): FriendScore => {
+  result: FriendRating,
+  value: FriendRating
+): FriendRating => {
   return {
     ...result,
     ...value
@@ -62,24 +75,22 @@ export const getFriendScoresForBook = (
 };
 
 export const toCategoryScores = (
-  bookData: CategoryNameAndScores
+  ratingsForItem: CategoryNameAndScores
 ): TierTableDataRow => {
-  const totalScore = _.reduce(bookData.scoresByFriend, sumFriendScores, 0);
-  const numericScore = totalScore / bookData.scoresByFriend.length;
-  const overallScore = getRankingFromScore(
-    totalScore / bookData.scoresByFriend.length
-  );
-
-  const friendsBookScore = _.reduce(
-    bookData.scoresByFriend,
-    getFriendScoresForBook,
-    {}
-  );
+  const totalScore = _.reduce(ratingsForItem.friendRatings, sumFriendScores, 0);
+  const numericScore = totalScore / _.size(ratingsForItem.friendRatings);
+  const overallScore = getRankingFromScore(numericScore);
 
   return {
-    name: bookData.name,
-    ...friendsBookScore,
+    name: ratingsForItem.name,
+    friendRatings: ratingsForItem.friendRatings,
     overallScore,
     numericScore
   };
+};
+
+export const toTableData = (activity: Activity) => {
+  const hashedDataByBook = createBookScoresHash(activity);
+  const data: TierTableDataRow[] = _.map(hashedDataByBook, toCategoryScores);
+  return _.sortBy(data, "numericScore").reverse();
 };

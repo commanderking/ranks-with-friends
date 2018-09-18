@@ -1,28 +1,21 @@
 import React from "react";
 import Table from "rc-table";
-import _ from "lodash";
-import { createBookScoresHash, toCategoryScores } from "./tierTableUtils";
-import { TierTableDataRow, FriendsDataType } from "./TierTableTypes";
+import { toTableData } from "./tierTableUtils";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
+import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
 
-const toTableData = (tiersActivityData: FriendsDataType[]) => {
-  const hashedDataByBook = createBookScoresHash(tiersActivityData);
-  const data: TierTableDataRow[] = _.map(hashedDataByBook, toCategoryScores);
-  return _.sortBy(data, "numericScore").reverse();
-};
-
-const createColumns = (tiersActivityData: FriendsDataType[]) => [
+const createColumns = (activity: Activity) => [
   {
     dataIndex: "name",
     key: "name",
-    title: "Book",
+    title: "",
     width: 300
   },
-  ...tiersActivityData.map((activityData: FriendsDataType) => {
+  ...activity.activityRatings.map((activityRating: RatingWithFriendInfo) => {
     return {
-      dataIndex: activityData.friend,
-      key: activityData.friend,
+      dataIndex: `friendRatings[${activityRating.friendId}]`,
+      key: activityRating.friendId,
       render: (value: string) => {
         return (
           <div
@@ -36,14 +29,18 @@ const createColumns = (tiersActivityData: FriendsDataType[]) => [
           </div>
         );
       },
-      title: activityData.friend,
+      title:
+        (activityRating &&
+          activityRating.friendInfo &&
+          activityRating.friendInfo.firstName) ||
+        "",
       width: 100
     };
   }),
   {
     dataIndex: "overallScore",
     key: "overallScore",
-    title: "Numeric Score",
+    title: "Overall Score",
     width: 100
   }
 ];
@@ -53,12 +50,25 @@ const TierTable = () => {
     <Query
       query={gql`
         {
-          getTiersActivity {
-            friend
+          activity(activityId: "5b9d837ee7179a7a9fc653fc") {
+            id
             title
-            ratings {
+            ratingType
+            items {
+              itemId
               name
-              score
+            }
+            activityRatings {
+              activityId
+              friendId
+              friendInfo {
+                firstName
+                lastName
+              }
+              itemRatings {
+                itemId
+                rating
+              }
             }
           }
         }
@@ -67,16 +77,15 @@ const TierTable = () => {
       {({ loading, error, data }) => {
         if (loading) return <p>Loading...</p>;
         if (error) return <p>Error :(</p>;
-        console.log("data", data);
-        console.log(toTableData(data.getTiersActivity));
+
         return (
           data &&
-          data.getTiersActivity && (
+          data.activity && (
             <div>
-              <h1>Tier Table</h1>
+              <h1>{data.activity.title}</h1>
               <Table
-                columns={createColumns(data.getTiersActivity)}
-                data={toTableData(data.getTiersActivity)}
+                columns={createColumns(data.activity)}
+                data={toTableData(data.activity)}
               />
             </div>
           )

@@ -10,16 +10,17 @@ export interface FriendsDataType {
   ratings: Array<CategoryScoreType>;
 }
 
-export interface FriendScore {
+export interface FriendRating {
   [friendName: string]: Tiers;
 }
 
 export interface CategoryNameAndScores {
+  id: string;
   name: string;
-  scoresByFriend: Array<FriendScore>;
+  friendRatings: FriendRating;
 }
 
-export interface ScoresPerCategoryType {
+export interface RatingsPerCategoryType {
   [categoryName: string]: CategoryNameAndScores;
 }
 
@@ -27,6 +28,5 @@ export interface TierTableDataRow {
   name: string;
   overallScore: string;
   numericScore: number;
-  // TODO: Should also include FriendScore
-  // [friendName: string]: string
+  friendRatings: FriendRating;
 }

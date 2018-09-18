@@ -57,6 +57,20 @@ const Tiers: FriendsDataType[] = [
 /* Table data format (working)
 [
   {
+  "name": "The Once and Future King",
+  "itemId": "1",
+  "friendRatings" : {
+    "JeffreyId": "A+",
+    "AllisonId": "S",
+    "Lin": "S-"
+  },
+  overallScore: "A+",
+  numericScore: 0.7424
+}
+]
+
+[
+  {
     "name": "The Once and Future King",
     "Allison": "S",
     "Jeffrey": "A+",
@@ -81,6 +95,16 @@ const Tiers: FriendsDataType[] = [
     "numericScore": 0.21428571428571427
   }
 ]
+*/
+
+/* Table Column example
+  [
+    {
+      dataIndex: friendId,
+      key: friendId,
+      title: friendName
+    }
+  ]
 */
 
 export default Tiers;
