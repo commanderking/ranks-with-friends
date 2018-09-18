@@ -24,20 +24,21 @@ export const createBookScoresHash = (
 ): ScoresPerCategoryType => {
   const scoresPerBook = {};
   friendsData.map((friendData: FriendsDataType) => {
-    friendData.books.map(book => {
-      const { name } = book;
+    friendData.ratings.map(rating => {
+      const { name } = rating;
       if (scoresPerBook[name]) {
         scoresPerBook[name].scoresByFriend.push({
-          [friendData.friend]: book.score
+          [friendData.friend]: rating.score
         });
       } else {
         scoresPerBook[name] = {
           name,
-          scoresByFriend: [{ [friendData.friend]: book.score }]
+          scoresByFriend: [{ [friendData.friend]: rating.score }]
         };
       }
     });
   });
+  console.log("scoresperBook", scoresPerBook);
   return scoresPerBook;
 };
 

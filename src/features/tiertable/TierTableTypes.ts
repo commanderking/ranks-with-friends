@@ -7,7 +7,7 @@ export interface CategoryScoreType {
 
 export interface FriendsDataType {
   friend: string;
-  books: Array<CategoryScoreType>;
+  ratings: Array<CategoryScoreType>;
 }
 
 export interface FriendScore {

@@ -55,7 +55,8 @@ const TierTable = () => {
         {
           getTiersActivity {
             friend
-            books {
+            title
+            ratings {
               name
               score
             }
@@ -66,7 +67,8 @@ const TierTable = () => {
       {({ loading, error, data }) => {
         if (loading) return <p>Loading...</p>;
         if (error) return <p>Error :(</p>;
-
+        console.log("data", data);
+        console.log(toTableData(data.getTiersActivity));
         return (
           data &&
           data.getTiersActivity && (
