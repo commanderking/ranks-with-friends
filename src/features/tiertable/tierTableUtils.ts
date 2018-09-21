@@ -82,8 +82,7 @@ export const toCategoryScores = (
   const overallScore = getRankingFromScore(numericScore);
 
   return {
-    name: ratingsForItem.name,
-    friendRatings: ratingsForItem.friendRatings,
+    ...ratingsForItem,
     overallScore,
     numericScore
   };
@@ -94,3 +93,10 @@ export const toTableData = (activity: Activity) => {
   const data: TierTableDataRow[] = _.map(hashedDataByBook, toCategoryScores);
   return _.sortBy(data, "numericScore").reverse();
 };
+
+export const tierOptions = tiers
+  .map((tier: Tiers) => ({
+    value: tier,
+    label: tier
+  }))
+  .reverse();

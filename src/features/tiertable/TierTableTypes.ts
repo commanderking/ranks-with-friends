@@ -25,8 +25,14 @@ export interface RatingsPerCategoryType {
 }
 
 export interface TierTableDataRow {
+  id: string;
   name: string;
   overallScore: string;
   numericScore: number;
   friendRatings: FriendRating;
+}
+
+export interface TierOption {
+  label: string;
+  value: string;
 }
