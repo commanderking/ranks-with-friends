@@ -1,29 +1,30 @@
 import gql from "graphql-tag";
 
-export const activityQuery = `
-{
+export const ACTIVITY_QUERY = gql`
+  {
     activity(activityId: "5b9d837ee7179a7a9fc653fc") {
-    id
-    title
-    ratingType
-    items {
+      id
+      title
+      ratingType
+      items {
         itemId
         name
-    }
-    activityRatings {
+      }
+      activityRatings {
         activityId
         friendId
         friendInfo {
-        firstName
-        lastName
+          firstName
+          lastName
         }
         itemRatings {
-        itemId
-        rating
+          itemId
+          rating
         }
+      }
     }
-    }
-}`;
+  }
+`;
 
 export const ADD_ACTIVITY_RATING = gql`
   mutation addActivityRating(

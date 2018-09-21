@@ -1,8 +1,7 @@
 import React from "react";
 import TierTable from "./TierTable";
 import { Query, Mutation } from "react-apollo";
-import gql from "graphql-tag";
-import { activityQuery, ADD_ACTIVITY_RATING } from "./TierTableQueries";
+import { ACTIVITY_QUERY, ADD_ACTIVITY_RATING } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
 
 export interface TierTableState {
@@ -10,8 +9,8 @@ export interface TierTableState {
 }
 
 class TierTableContainer extends React.Component<{}, TierTableState> {
-  constructor() {
-    super({});
+  constructor(props: Object) {
+    super(props);
     this.state = {
       itemRatings: []
     };
@@ -24,10 +23,8 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
     });
   };
   render() {
-    console.log("itemRatings", this.state.itemRatings);
-
     return (
-      <Query query={gql(activityQuery)}>
+      <Query query={ACTIVITY_QUERY}>
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
@@ -55,7 +52,7 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
                         });
                       }}
                     >
-                      Click Here
+                      Confirm Ratings
                     </button>
                   )}
                 </Mutation>

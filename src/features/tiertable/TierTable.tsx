@@ -12,7 +12,7 @@ import Select from "react-select";
 const createColumns = (
   activity: Activity,
   setRating: (friendRating: FriendRating) => void
-): any => [
+) => [
   {
     dataIndex: "name",
     key: "name",
@@ -56,7 +56,6 @@ const createColumns = (
     title: "Your Ranking",
     width: 100,
     render: (value: string, record: any) => {
-      // TODO: Use react select
       return (
         <Select
           options={tierOptions}

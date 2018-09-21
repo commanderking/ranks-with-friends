@@ -56,7 +56,6 @@ export const createBookScoresHash = (
     },
     namesByItem
   );
-  console.log("ratingsByItem", ratingsByItem);
   return ratingsByItem;
 };
 
