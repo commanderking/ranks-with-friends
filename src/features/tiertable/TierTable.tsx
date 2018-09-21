@@ -1,16 +1,29 @@
 import React from "react";
 import Table from "rc-table";
-import { toTableData } from "./tierTableUtils";
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
-import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
+import { toTableData, tierOptions } from "./tierTableUtils";
 
-const createColumns = (activity: Activity) => [
+import {
+  Activity,
+  RatingWithFriendInfo,
+  FriendRating
+} from "../../serverTypes/graphql";
+import Select from "react-select";
+
+const createColumns = (
+  activity: Activity,
+  setRating: (friendRating: FriendRating) => void
+): any => [
   {
     dataIndex: "name",
     key: "name",
     title: "",
     width: 300
+  },
+  {
+    dataIndex: "overallScore",
+    key: "overallScore",
+    title: "Overall Score",
+    width: 100
   },
   ...activity.activityRatings.map((activityRating: RatingWithFriendInfo) => {
     return {
@@ -38,60 +51,36 @@ const createColumns = (activity: Activity) => [
     };
   }),
   {
-    dataIndex: "overallScore",
-    key: "overallScore",
-    title: "Overall Score",
-    width: 100
+    dataIndex: "test",
+    key: "test",
+    title: "Your Ranking",
+    width: 100,
+    render: (value: string, record: any) => {
+      // TODO: Use react select
+      return (
+        <Select
+          options={tierOptions}
+          onChange={(option: any) => {
+            setRating({
+              rating: option.value,
+              itemId: record.id
+            });
+          }}
+        />
+      );
+    }
   }
 ];
 
-const TierTable = () => {
+// TODO: Create new type for data with Activity as property value
+const TierTable = ({ data, setRating }: any) => {
   return (
-    <Query
-      query={gql`
-        {
-          activity(activityId: "5b9d837ee7179a7a9fc653fc") {
-            id
-            title
-            ratingType
-            items {
-              itemId
-              name
-            }
-            activityRatings {
-              activityId
-              friendId
-              friendInfo {
-                firstName
-                lastName
-              }
-              itemRatings {
-                itemId
-                rating
-              }
-            }
-          }
-        }
-      `}
-    >
-      {({ loading, error, data }) => {
-        if (loading) return <p>Loading...</p>;
-        if (error) return <p>Error :(</p>;
-
-        return (
-          data &&
-          data.activity && (
-            <div>
-              <h1>{data.activity.title}</h1>
-              <Table
-                columns={createColumns(data.activity)}
-                data={toTableData(data.activity)}
-              />
-            </div>
-          )
-        );
-      }}
-    </Query>
+    <div>
+      <Table
+        columns={createColumns(data.activity, setRating)}
+        data={toTableData(data.activity)}
+      />
+    </div>
   );
 };
 

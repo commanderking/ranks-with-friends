@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import TierTable from "./features/tiertable/TierTable";
+import TierTableContainer from "./features/tiertable/TierTableContainer";
 import { ApolloProvider } from "react-apollo";
 
 import ApolloClient from "apollo-boost";
@@ -16,7 +16,7 @@ class App extends Component {
     return (
       <ApolloProvider client={client}>
         <div className="App">
-          <TierTable />
+          <TierTableContainer />
         </div>
       </ApolloProvider>
     );
