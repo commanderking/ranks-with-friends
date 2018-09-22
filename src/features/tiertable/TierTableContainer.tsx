@@ -22,6 +22,11 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
       itemRatings: newItemRatings
     });
   };
+  submitRatings = (addActivityRating: any) => {
+    this.setState({
+      itemRatings: []
+    });
+  };
   render() {
     return (
       <Query query={ACTIVITY_QUERY}>
@@ -34,27 +39,43 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
             data.activity && (
               <div>
                 <h1>{data.activity.title}</h1>
-
-                <TierTable data={data} setRating={this.setRating} />
                 <Mutation
                   mutation={ADD_ACTIVITY_RATING}
                   key={"AddActivityRating"}
+                  refetchQueries={() => [
+                    {
+                      query: ACTIVITY_QUERY
+                    }
+                  ]}
                 >
-                  {(addActivityRating, { data }) => (
-                    <button
-                      onClick={e => {
-                        addActivityRating({
-                          variables: {
-                            activityId: "5b9d837ee7179a7a9fc653fc",
-                            friendId: "5ba4414936437b9095fc6144",
-                            itemRatings: JSON.stringify(this.state.itemRatings)
-                          }
-                        });
-                      }}
-                    >
-                      Confirm Ratings
-                    </button>
-                  )}
+                  {(
+                    addActivityRating,
+                    { loading: mutationLoading, data: mutationData }
+                  ) => {
+                    if (mutationLoading) return <p>Loading...</p>;
+
+                    return (
+                      <div>
+                        <TierTable data={data} setRating={this.setRating} />
+
+                        <button
+                          onClick={e => {
+                            addActivityRating({
+                              variables: {
+                                activityId: "5b9d837ee7179a7a9fc653fc",
+                                friendId: "5ba4414936437b9095fc6144",
+                                itemRatings: JSON.stringify(
+                                  this.state.itemRatings
+                                )
+                              }
+                            });
+                          }}
+                        >
+                          Confirm Ratings
+                        </button>
+                      </div>
+                    );
+                  }}
                 </Mutation>
               </div>
             )

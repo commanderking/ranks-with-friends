@@ -1,13 +1,13 @@
 import React from "react";
 import Table from "rc-table";
-import { toTableData, tierOptions } from "./tierTableUtils";
-
+import { toTableData, getNumericScoreforRating } from "./tierTableUtils";
+import { createNewRankingColumn } from "./components/NewRankingColumn";
 import {
   Activity,
   RatingWithFriendInfo,
   FriendRating
 } from "../../serverTypes/graphql";
-import Select from "react-select";
+import FriendRatingTitle from "./components/FriendRatingTitle";
 
 const createColumns = (
   activity: Activity,
@@ -42,33 +42,21 @@ const createColumns = (
           </div>
         );
       },
-      title:
-        (activityRating &&
-          activityRating.friendInfo &&
-          activityRating.friendInfo.firstName) ||
-        "",
+      onCell: (record: any) => {
+        const numericScoreForFriend = getNumericScoreforRating(
+          record.friendRatings[activityRating.friendId]
+        );
+        return {
+          style: {
+            backgroundColor: `rgba(255, 0, 0, ${numericScoreForFriend}`
+          }
+        };
+      },
+      title: <FriendRatingTitle activityRating={activityRating} />,
       width: 100
     };
   }),
-  {
-    dataIndex: "test",
-    key: "test",
-    title: "Your Ranking",
-    width: 100,
-    render: (value: string, record: any) => {
-      return (
-        <Select
-          options={tierOptions}
-          onChange={(option: any) => {
-            setRating({
-              rating: option.value,
-              itemId: record.id
-            });
-          }}
-        />
-      );
-    }
-  }
+  createNewRankingColumn(setRating, activity, "5ba4414936437b9095fc6144")
 ];
 
 // TODO: Create new type for data with Activity as property value
