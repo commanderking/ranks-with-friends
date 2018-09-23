@@ -11,7 +11,8 @@ import FriendRatingTitle from "./components/FriendRatingTitle";
 
 const createColumns = (
   activity: Activity,
-  setRating: (friendRating: FriendRating) => void
+  setRating: (friendRating: FriendRating) => void,
+  userId: string
 ) => [
   {
     dataIndex: "name",
@@ -52,19 +53,21 @@ const createColumns = (
           }
         };
       },
-      title: <FriendRatingTitle activityRating={activityRating} />,
+      title: (
+        <FriendRatingTitle activityRating={activityRating} userId={userId} />
+      ),
       width: 100
     };
   }),
-  createNewRankingColumn(setRating, activity, "5ba4414936437b9095fc6144")
+  createNewRankingColumn(setRating, activity, userId)
 ];
 
 // TODO: Create new type for data with Activity as property value
-const TierTable = ({ data, setRating }: any) => {
+const TierTable = ({ data, setRating, userId }: any) => {
   return (
     <div>
       <Table
-        columns={createColumns(data.activity, setRating)}
+        columns={createColumns(data.activity, setRating, userId)}
         data={toTableData(data.activity)}
       />
     </div>

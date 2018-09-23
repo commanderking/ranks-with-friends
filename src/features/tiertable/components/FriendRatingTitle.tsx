@@ -4,14 +4,16 @@ import { RatingWithFriendInfo } from "../../../serverTypes/graphql";
 import { Mutation } from "react-apollo";
 
 const FriendRatingTitle = ({
-  activityRating
+  activityRating,
+  userId
 }: {
   activityRating: RatingWithFriendInfo;
+  userId: string;
 }) => {
   const { friendId, activityId, friendInfo } = activityRating;
   const title = (friendInfo && friendInfo.firstName) || "";
   // TODO: Check the logged in user id and see if it matches friend
-  const showActivityRating = friendId === "5ba4414936437b9095fc6144";
+  const showActivityRating = friendId === userId;
   return (
     <Mutation
       mutation={DELETE_ACTIVITY_RATING}

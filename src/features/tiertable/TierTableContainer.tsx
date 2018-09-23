@@ -9,6 +9,8 @@ export interface TierTableState {
   itemRatings: Array<FriendRating>;
 }
 
+const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
+
 class TierTableContainer extends React.Component<{}, TierTableState> {
   constructor(props: Object) {
     super(props);
@@ -21,11 +23,6 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
     const newItemRatings = [...this.state.itemRatings, { itemId, rating }];
     this.setState({
       itemRatings: newItemRatings
-    });
-  };
-  submitRatings = (addActivityRating: any) => {
-    this.setState({
-      itemRatings: []
     });
   };
   render() {
@@ -58,17 +55,21 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
 
                     return (
                       <div>
-                        <TierTable data={data} setRating={this.setRating} />
+                        <TierTable
+                          data={data}
+                          setRating={this.setRating}
+                          userId={MOCK_LOGGED_IN_FRIEND}
+                        />
                         {hasFriendCompletedActivityRating(
                           data.activity,
-                          "5ba4414936437b9095fc6144"
+                          MOCK_LOGGED_IN_FRIEND
                         ) && (
                           <button
                             onClick={e => {
                               addActivityRating({
                                 variables: {
                                   activityId: "5b9d837ee7179a7a9fc653fc",
-                                  friendId: "5ba4414936437b9095fc6144",
+                                  friendId: MOCK_LOGGED_IN_FRIEND,
                                   itemRatings: JSON.stringify(
                                     this.state.itemRatings
                                   )
