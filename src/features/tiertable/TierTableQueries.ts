@@ -59,3 +59,29 @@ export const ADD_ACTIVITY_RATING = gql`
     }
   }
 `;
+
+export const DELETE_ACTIVITY_RATING = gql`
+  mutation deleteActivityRating($activityId: String!, $friendId: String!) {
+    deleteActivityRatings(activityId: $activityId, friendId: $friendId) {
+      id
+      ratingType
+      title
+      items {
+        itemId
+        name
+      }
+      activityRatings {
+        activityId
+        friendId
+        itemRatings {
+          itemId
+          rating
+        }
+        friendInfo {
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`;
