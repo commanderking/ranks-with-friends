@@ -3,18 +3,14 @@ import Select from "react-select";
 import { FriendRating } from "../../../serverTypes/graphql";
 import { tierOptions } from "../tierTableUtils";
 import { Activity } from "../../../serverTypes/graphql";
+import { hasFriendCompletedActivityRating } from "../tierTableUtils";
 
 export const createNewRankingColumn = (
   setRating: (friendRating: FriendRating) => void,
   activity: Activity,
   friendId: string
 ) => {
-  const activityIds = activity.activityRatings.map(
-    activity => activity.friendId
-  );
-  const shouldShowNewRankingColumn = !activityIds.includes(friendId);
-  console.log("shouldShowNewRankingColumn", shouldShowNewRankingColumn);
-  return shouldShowNewRankingColumn
+  return hasFriendCompletedActivityRating(activity, friendId)
     ? {
         dataIndex: "test",
         key: "test",

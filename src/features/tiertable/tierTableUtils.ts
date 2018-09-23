@@ -94,6 +94,14 @@ export const toTableData = (activity: Activity) => {
   return _.sortBy(data, "numericScore").reverse();
 };
 
+export const hasFriendCompletedActivityRating = (
+  activity: Activity,
+  friendId: string
+): boolean => {
+  const friendIds = activity.activityRatings.map(activity => activity.friendId);
+  return !friendIds.includes(friendId);
+};
+
 export const tierOptions = tiers
   .map((tier: Tiers) => ({
     value: tier,

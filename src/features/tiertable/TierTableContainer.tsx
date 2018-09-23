@@ -3,6 +3,7 @@ import TierTable from "./TierTable";
 import { Query, Mutation } from "react-apollo";
 import { ACTIVITY_QUERY, ADD_ACTIVITY_RATING } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
+import { hasFriendCompletedActivityRating } from "./tierTableUtils";
 
 export interface TierTableState {
   itemRatings: Array<FriendRating>;
@@ -47,6 +48,7 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
                       query: ACTIVITY_QUERY
                     }
                   ]}
+                  awaitRefetchQueries
                 >
                   {(
                     addActivityRating,
@@ -57,22 +59,26 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
                     return (
                       <div>
                         <TierTable data={data} setRating={this.setRating} />
-
-                        <button
-                          onClick={e => {
-                            addActivityRating({
-                              variables: {
-                                activityId: "5b9d837ee7179a7a9fc653fc",
-                                friendId: "5ba4414936437b9095fc6144",
-                                itemRatings: JSON.stringify(
-                                  this.state.itemRatings
-                                )
-                              }
-                            });
-                          }}
-                        >
-                          Confirm Ratings
-                        </button>
+                        {hasFriendCompletedActivityRating(
+                          data.activity,
+                          "5ba4414936437b9095fc6144"
+                        ) && (
+                          <button
+                            onClick={e => {
+                              addActivityRating({
+                                variables: {
+                                  activityId: "5b9d837ee7179a7a9fc653fc",
+                                  friendId: "5ba4414936437b9095fc6144",
+                                  itemRatings: JSON.stringify(
+                                    this.state.itemRatings
+                                  )
+                                }
+                              });
+                            }}
+                          >
+                            Confirm Ratings
+                          </button>
+                        )}
                       </div>
                     );
                   }}

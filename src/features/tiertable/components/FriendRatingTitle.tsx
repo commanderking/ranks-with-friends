@@ -21,6 +21,7 @@ const FriendRatingTitle = ({
           query: ACTIVITY_QUERY
         }
       ]}
+      awaitRefetchQueries
     >
       {deleteActivityRatings => (
         <div>
