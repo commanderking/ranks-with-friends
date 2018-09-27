@@ -5,7 +5,7 @@ import { ApolloProvider } from "react-apollo";
 
 import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
-
+import RouteConfig from "./routes/routeConfig";
 // TODO: Update client based on graphql url
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql"
@@ -16,7 +16,7 @@ class App extends Component {
     return (
       <ApolloProvider client={client}>
         <div className="App">
-          <TierTableContainer />
+          <RouteConfig />
         </div>
       </ApolloProvider>
     );

@@ -9,10 +9,17 @@ export interface TierTableState {
   itemRatings: Array<FriendRating>;
 }
 
+interface TierTableProps {
+  match: any;
+}
+
 const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
 
-class TierTableContainer extends React.Component<{}, TierTableState> {
-  constructor(props: Object) {
+class TierTableContainer extends React.Component<
+  TierTableProps,
+  TierTableState
+> {
+  constructor(props: TierTableProps) {
     super(props);
     this.state = {
       itemRatings: []
@@ -26,8 +33,11 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
     });
   };
   render() {
+    const { match } = this.props;
+    const activityId = match.params.activityId;
+
     return (
-      <Query query={ACTIVITY_QUERY}>
+      <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
@@ -42,7 +52,8 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
                   key={"AddActivityRating"}
                   refetchQueries={() => [
                     {
-                      query: ACTIVITY_QUERY
+                      query: ACTIVITY_QUERY,
+                      variables: { activityId }
                     }
                   ]}
                   awaitRefetchQueries
@@ -68,7 +79,7 @@ class TierTableContainer extends React.Component<{}, TierTableState> {
                             onClick={e => {
                               addActivityRating({
                                 variables: {
-                                  activityId: "5b9d837ee7179a7a9fc653fc",
+                                  activityId,
                                   friendId: MOCK_LOGGED_IN_FRIEND,
                                   itemRatings: JSON.stringify(
                                     this.state.itemRatings

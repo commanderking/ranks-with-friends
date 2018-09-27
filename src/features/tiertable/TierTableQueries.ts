@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const ACTIVITY_QUERY = gql`
-  {
-    activity(activityId: "5b9d837ee7179a7a9fc653fc") {
+  query Activity($activityId: String!) {
+    activity(activityId: $activityId) {
       id
       title
       ratingType
