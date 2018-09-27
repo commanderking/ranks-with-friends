@@ -10,7 +10,11 @@ export interface TierTableState {
 }
 
 interface TierTableProps {
-  match: any;
+  match: {
+    params: {
+      activityId: string;
+    };
+  };
 }
 
 const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
@@ -35,7 +39,6 @@ class TierTableContainer extends React.Component<
   render() {
     const { match } = this.props;
     const activityId = match.params.activityId;
-
     return (
       <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
         {({ loading, error, data }) => {
