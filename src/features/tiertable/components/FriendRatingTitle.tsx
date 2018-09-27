@@ -20,7 +20,10 @@ const FriendRatingTitle = ({
       key={"AddActivityRating"}
       refetchQueries={() => [
         {
-          query: ACTIVITY_QUERY
+          query: ACTIVITY_QUERY,
+          variables: {
+            activityId
+          }
         }
       ]}
       awaitRefetchQueries
