@@ -1,32 +1,3 @@
-export const tiers: Tiers[] = [
-  "D-",
-  "D",
-  "D+",
-  "C-",
-  "C",
-  "C+",
-  "B-",
-  "B",
-  "B+",
-  "A-",
-  "A",
-  "A+",
-  "S-",
-  "S"
-];
+export const tiers: Tiers[] = ["F", "E", "D", "C", "B", "A", "S"];
 
-export type Tiers =
-  | "D-"
-  | "D"
-  | "D+"
-  | "C-"
-  | "C"
-  | "C+"
-  | "B-"
-  | "B"
-  | "B+"
-  | "A-"
-  | "A"
-  | "A+"
-  | "S-"
-  | "S";
+export type Tiers = "F" | "E" | "D" | "C" | "B" | "A" | "S";

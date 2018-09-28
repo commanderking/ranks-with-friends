@@ -23,15 +23,15 @@ const Tiers: FriendsDataType[] = [
     ratings: [
       {
         name: "The Once and Future King",
-        score: "A+"
+        score: "A"
       },
       {
         name: "Billy Budd",
-        score: "C+"
+        score: "C"
       },
       {
         name: "Rebecca",
-        score: "B+"
+        score: "B"
       }
     ]
   },
@@ -40,15 +40,15 @@ const Tiers: FriendsDataType[] = [
     ratings: [
       {
         name: "The Once and Future King",
-        score: "B+"
+        score: "B"
       },
       {
         name: "Billy Budd",
-        score: "D-"
+        score: "D"
       },
       {
         name: "Rebecca",
-        score: "D-"
+        score: "D"
       }
     ]
   }
