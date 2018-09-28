@@ -18,13 +18,35 @@ const createColumns = (
     dataIndex: "name",
     key: "name",
     title: "",
-    width: 300
+    render: (value: string) => {
+      return <div style={{ textAlign: "right", padding: "10px" }}>{value}</div>;
+    }
   },
   {
     dataIndex: "overallScore",
     key: "overallScore",
     title: "Overall Score",
-    width: 100
+    width: 100,
+    render: (value: string) => {
+      return (
+        <div
+          style={{
+            color: "black",
+            fontSize: "20px",
+            padding: "10px"
+          }}
+        >
+          {value}
+        </div>
+      );
+    },
+    onCell: (record: any) => {
+      return {
+        style: {
+          backgroundColor: `rgba(255, 0, 0, ${record.numericScore}`
+        }
+      };
+    }
   },
   ...activity.activityRatings.map((activityRating: RatingWithFriendInfo) => {
     return {
@@ -36,7 +58,7 @@ const createColumns = (
             style={{
               color: "black",
               fontSize: "20px",
-              padding: "20px"
+              padding: "10px"
             }}
           >
             {value}

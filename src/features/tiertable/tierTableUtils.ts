@@ -14,9 +14,9 @@ export const getNumericScoreforRating = scaleBand()
   .range([0, 1])
   .domain(tiers);
 
-export const getRankingFromScore = (score: number): Tiers => {
+export const getRankingFromScore = (score: number | null): Tiers | "-" => {
   const step = getNumericScoreforRating.step();
-  return tiers[Math.round(score / step)];
+  return score ? tiers[Math.round(score / step)] : "-";
 };
 
 export const createBookScoresHash = (
@@ -59,8 +59,10 @@ export const createBookScoresHash = (
   return ratingsByItem;
 };
 
-export const sumFriendScores = (total: number, FriendRating: Tiers): number => {
-  const numericScore = getNumericScoreforRating(FriendRating);
+export const sumFriendScores = (total: number, friendRating: Tiers): number => {
+  const numericScore = friendRating
+    ? getNumericScoreforRating(friendRating)
+    : 0;
   return numericScore ? total + numericScore : total;
 };
 
@@ -78,7 +80,14 @@ export const toCategoryScores = (
   ratingsForItem: CategoryNameAndScores
 ): TierTableDataRow => {
   const totalScore = _.reduce(ratingsForItem.friendRatings, sumFriendScores, 0);
-  const numericScore = totalScore / _.size(ratingsForItem.friendRatings);
+  // TODO: Need overall score to not take into consideration not scored
+  console.log(_.size(ratingsForItem.friendRatings));
+
+  const numberFriendsWhoRatedItem = _.size(ratingsForItem.friendRatings);
+  const numericScore =
+    numberFriendsWhoRatedItem > 0
+      ? totalScore / _.size(ratingsForItem.friendRatings)
+      : 0;
   const overallScore = getRankingFromScore(numericScore);
 
   return {
@@ -91,6 +100,7 @@ export const toCategoryScores = (
 export const toTableData = (activity: Activity) => {
   const hashedDataByBook = createBookScoresHash(activity);
   const data: TierTableDataRow[] = _.map(hashedDataByBook, toCategoryScores);
+  console.log("data", data);
   return _.sortBy(data, "numericScore").reverse();
 };
 
