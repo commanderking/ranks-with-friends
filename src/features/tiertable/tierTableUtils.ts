@@ -80,9 +80,6 @@ export const toCategoryScores = (
   ratingsForItem: CategoryNameAndScores
 ): TierTableDataRow => {
   const totalScore = _.reduce(ratingsForItem.friendRatings, sumFriendScores, 0);
-  // TODO: Need overall score to not take into consideration not scored
-  console.log(_.size(ratingsForItem.friendRatings));
-
   const numberFriendsWhoRatedItem = _.size(ratingsForItem.friendRatings);
   const numericScore =
     numberFriendsWhoRatedItem > 0
@@ -100,7 +97,6 @@ export const toCategoryScores = (
 export const toTableData = (activity: Activity) => {
   const hashedDataByBook = createBookScoresHash(activity);
   const data: TierTableDataRow[] = _.map(hashedDataByBook, toCategoryScores);
-  console.log("data", data);
   return _.sortBy(data, "numericScore").reverse();
 };
 
