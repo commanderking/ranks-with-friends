@@ -8,15 +8,21 @@ import {
 } from "./TierTableTypes";
 import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
 
-import { tiers, Tiers } from "../../enums/Tiers";
+import { tiers, overallTiers, Tiers, OverallTiers } from "../../enums/Tiers";
 
-export const getNumericScoreforRating = scaleBand()
+export const getNumericOverallScoreRating = scaleBand()
   .range([0, 1])
-  .domain(tiers);
+  .domain(overallTiers);
 
-export const getRankingFromScore = (score: number | null): Tiers | "-" => {
-  const step = getNumericScoreforRating.step();
-  return score ? tiers[Math.round(score / step)] : "-";
+export const getOverallRankingFromScore = (
+  score: number | null
+): OverallTiers | "-" => {
+  const step = getNumericOverallScoreRating.step();
+  console.log("step", step);
+  console.log("score", score);
+  console.log((score ? score : 0) / step);
+  console.log(overallTiers[15]);
+  return score ? overallTiers[Math.round(score / step)] : "-";
 };
 
 export const createBookScoresHash = (
@@ -61,8 +67,9 @@ export const createBookScoresHash = (
 
 export const sumFriendScores = (total: number, friendRating: Tiers): number => {
   const numericScore = friendRating
-    ? getNumericScoreforRating(friendRating)
+    ? getNumericOverallScoreRating(friendRating)
     : 0;
+  console.log("score", numericScore);
   return numericScore ? total + numericScore : total;
 };
 
@@ -85,7 +92,7 @@ export const toCategoryScores = (
     numberFriendsWhoRatedItem > 0
       ? totalScore / _.size(ratingsForItem.friendRatings)
       : 0;
-  const overallScore = getRankingFromScore(numericScore);
+  const overallScore = getOverallRankingFromScore(numericScore);
 
   return {
     ...ratingsForItem,

@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "rc-table";
-import { toTableData, getNumericScoreforRating } from "./tierTableUtils";
+import { toTableData, getNumericOverallScoreRating } from "./tierTableUtils";
 import { createNewRankingColumn } from "./components/NewRankingColumn";
 import {
   Activity,
@@ -43,6 +43,7 @@ const createColumns = (
     onCell: (record: any) => {
       return {
         style: {
+          border: "2px solid black",
           backgroundColor: `rgba(255, 0, 0, ${record.numericScore}`
         }
       };
@@ -66,7 +67,7 @@ const createColumns = (
         );
       },
       onCell: (record: any) => {
-        const numericScoreForFriend = getNumericScoreforRating(
+        const numericScoreForFriend = getNumericOverallScoreRating(
           record.friendRatings[activityRating.friendId]
         );
         return {
