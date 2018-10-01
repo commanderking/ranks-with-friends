@@ -18,10 +18,6 @@ export const getOverallRankingFromScore = (
   score: number | null
 ): OverallTiers | "-" => {
   const step = getNumericOverallScoreRating.step();
-  console.log("step", step);
-  console.log("score", score);
-  console.log((score ? score : 0) / step);
-  console.log(overallTiers[15]);
   return score ? overallTiers[Math.round(score / step)] : "-";
 };
 
@@ -69,7 +65,6 @@ export const sumFriendScores = (total: number, friendRating: Tiers): number => {
   const numericScore = friendRating
     ? getNumericOverallScoreRating(friendRating)
     : 0;
-  console.log("score", numericScore);
   return numericScore ? total + numericScore : total;
 };
 
