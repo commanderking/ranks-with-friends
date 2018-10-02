@@ -4,7 +4,7 @@ import { Query, Mutation } from "react-apollo";
 import { ACTIVITY_QUERY, ADD_ACTIVITY_RATING } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
 import { hasFriendCompletedActivityRating } from "./tierTableUtils";
-
+import queryString from "query-string";
 export interface TierTableState {
   itemRatings: Array<FriendRating>;
 }
@@ -15,9 +15,14 @@ interface TierTableProps {
       activityId: string;
     };
   };
+  location: {
+    search: string;
+  };
 }
 
-const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
+// Lin - const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
+// Jeffrey - 5b9d83af36437b9095cc3122
+// Allison - 5b9d83af36437b9095cc3121
 
 class TierTableContainer extends React.Component<
   TierTableProps,
@@ -37,7 +42,8 @@ class TierTableContainer extends React.Component<
     });
   };
   render() {
-    const { match } = this.props;
+    const { match, location } = this.props;
+    const userId = queryString.parse(location.search).user;
     const activityId = match.params.activityId;
     return (
       <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
@@ -47,7 +53,8 @@ class TierTableContainer extends React.Component<
 
           return (
             data &&
-            data.activity && (
+            data.activity &&
+            userId && (
               <div>
                 <h1>{data.activity.title}</h1>
                 <Mutation
@@ -72,18 +79,18 @@ class TierTableContainer extends React.Component<
                         <TierTable
                           data={data}
                           setRating={this.setRating}
-                          userId={MOCK_LOGGED_IN_FRIEND}
+                          userId={userId}
                         />
                         {hasFriendCompletedActivityRating(
                           data.activity,
-                          MOCK_LOGGED_IN_FRIEND
+                          userId
                         ) && (
                           <button
                             onClick={e => {
                               addActivityRating({
                                 variables: {
                                   activityId,
-                                  friendId: MOCK_LOGGED_IN_FRIEND,
+                                  friendId: userId,
                                   itemRatings: JSON.stringify(
                                     this.state.itemRatings
                                   )
