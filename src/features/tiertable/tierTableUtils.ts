@@ -116,3 +116,55 @@ export const tierOptions = tiers
     label: tier
   }))
   .reverse();
+
+// Merges one user's ranking with the items
+export const getItemsWithUserRankings = (
+  activity: Activity,
+  userId: string
+) => {
+  activity.items;
+  const userRating = activity.activityRatings.find(
+    activityRating => activityRating.friendId === userId
+  );
+  console.log("userRating", userRating);
+
+  const userRatingHash = userRating
+    ? _.keyBy(userRating.itemRatings, "itemId")
+    : {};
+
+  const itemsWithUserRatings = activity.items.map(item => {
+    return {
+      ...item,
+      ...userRatingHash[item.itemId]
+    };
+  });
+
+  return itemsWithUserRatings;
+};
+
+export const groupItemsByUserRanking = (activity: Activity, userId: string) => {
+  const itemsWithUserRatings = getItemsWithUserRankings(activity, userId);
+  console.log("itemsWithUserRatings", itemsWithUserRatings);
+  const itemsByTierInitial = {};
+  const itemsByTier = tiers.reduce((accumulatedTierRankings, tier) => {
+    const itemsWithTierRating = itemsWithUserRatings.filter(item => {
+      return item.rating === tier;
+    });
+
+    return {
+      ...accumulatedTierRankings,
+      [tier]: itemsWithTierRating
+    };
+  }, itemsByTierInitial);
+
+  const itemsWithoutRankings = itemsWithUserRatings.filter(item => {
+    return !item.rating;
+  });
+
+  console.log("itemsWithoutRatings");
+
+  return {
+    ...itemsByTier,
+    Unranked: itemsWithoutRankings
+  };
+};

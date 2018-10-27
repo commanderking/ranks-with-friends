@@ -10,7 +10,13 @@ const routes = [
   },
   {
     path: "/activity/:activityId",
-    component: TierTableContainer
+    component: TierTableContainer,
+    exact: true
+  },
+  {
+    path: "/activity/edit/:activityId",
+    component: () => <div>Edit</div>,
+    exact: true
   }
 ];
 
