@@ -53,7 +53,6 @@ class TierTableContainer extends React.Component<
 
   componentDidMount() {
     const mode = queryString.parse(location.search).mode;
-    console.log("mode", mode);
     if (mode === "edit") {
       this.setState({
         editMode: true
@@ -73,7 +72,6 @@ class TierTableContainer extends React.Component<
           if (error) return <p>Error :(</p>;
 
           const hasCompleteData = data && data.activity && userId;
-          console.log("data", data);
           if (hasCompleteData && !editMode) {
             return (
               <div>

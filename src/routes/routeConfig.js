@@ -12,11 +12,6 @@ const routes = [
     path: "/activity/:activityId",
     component: TierTableContainer,
     exact: true
-  },
-  {
-    path: "/activity/edit/:activityId",
-    component: () => <div>Edit</div>,
-    exact: true
   }
 ];
 
