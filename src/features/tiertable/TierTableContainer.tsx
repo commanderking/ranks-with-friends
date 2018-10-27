@@ -5,8 +5,10 @@ import { ACTIVITY_QUERY, ADD_ACTIVITY_RATING } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
 import { hasFriendCompletedActivityRating } from "./tierTableUtils";
 import queryString from "query-string";
+import TierTableEdit from "./components/TierTableEdit";
 export interface TierTableState {
   itemRatings: Array<FriendRating>;
+  editMode: boolean;
 }
 
 interface TierTableProps {
@@ -31,7 +33,8 @@ class TierTableContainer extends React.Component<
   constructor(props: TierTableProps) {
     super(props);
     this.state = {
-      itemRatings: []
+      itemRatings: [],
+      editMode: false
     };
   }
 
@@ -41,7 +44,24 @@ class TierTableContainer extends React.Component<
       itemRatings: newItemRatings
     });
   };
+
+  enterEditMode = () => {
+    this.setState({
+      editMode: true
+    });
+  };
+
+  componentDidMount() {
+    const mode = queryString.parse(location.search).mode;
+    if (mode === "edit") {
+      this.setState({
+        editMode: true
+      });
+    }
+  }
+
   render() {
+    const { itemRatings, editMode } = this.state;
     const { match, location } = this.props;
     const userId = queryString.parse(location.search).user;
     const activityId = match.params.activityId;
@@ -51,10 +71,9 @@ class TierTableContainer extends React.Component<
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
-          return (
-            data &&
-            data.activity &&
-            userId && (
+          const hasCompleteData = data && data.activity && userId;
+          if (hasCompleteData && !editMode) {
+            return (
               <div>
                 <h1>{data.activity.title}</h1>
                 <Mutation
@@ -91,9 +110,7 @@ class TierTableContainer extends React.Component<
                                 variables: {
                                   activityId,
                                   friendId: userId,
-                                  itemRatings: JSON.stringify(
-                                    this.state.itemRatings
-                                  )
+                                  itemRatings: JSON.stringify(itemRatings)
                                 }
                               });
                             }}
@@ -105,9 +122,14 @@ class TierTableContainer extends React.Component<
                     );
                   }}
                 </Mutation>
+                <button onClick={this.enterEditMode}>Edit Ratings</button>
               </div>
-            )
-          );
+            );
+          }
+          if (hasCompleteData && editMode) {
+            return <TierTableEdit data={data} userId={userId} />;
+          }
+          return <div>Could not get needed data</div>;
         }}
       </Query>
     );
