@@ -4,7 +4,9 @@ import {
   FriendRating,
   RatingsPerCategoryType,
   CategoryNameAndScores,
-  TierTableDataRow
+  TierTableDataRow,
+  ItemWithUserRating,
+  ItemWithUserRatingByRating
 } from "./TierTableTypes";
 import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
 
@@ -118,15 +120,14 @@ export const tierOptions = tiers
   .reverse();
 
 // Merges one user's ranking with the items
-export const getItemsWithUserRankings = (
+const getItemsWithUserRankings = (
   activity: Activity,
   userId: string
-) => {
+): Array<ItemWithUserRating> => {
   activity.items;
   const userRating = activity.activityRatings.find(
     activityRating => activityRating.friendId === userId
   );
-  console.log("userRating", userRating);
 
   const userRatingHash = userRating
     ? _.keyBy(userRating.itemRatings, "itemId")
@@ -138,14 +139,14 @@ export const getItemsWithUserRankings = (
       ...userRatingHash[item.itemId]
     };
   });
-
   return itemsWithUserRatings;
 };
 
-export const groupItemsByUserRanking = (activity: Activity, userId: string) => {
+export const groupItemsByUserRanking = (
+  activity: Activity,
+  userId: string
+): ItemWithUserRatingByRating => {
   const itemsWithUserRatings = getItemsWithUserRankings(activity, userId);
-  console.log("itemsWithUserRatings", itemsWithUserRatings);
-  const itemsByTierInitial = {};
   const itemsByTier = tiers.reduce((accumulatedTierRankings, tier) => {
     const itemsWithTierRating = itemsWithUserRatings.filter(item => {
       return item.rating === tier;
@@ -155,16 +156,58 @@ export const groupItemsByUserRanking = (activity: Activity, userId: string) => {
       ...accumulatedTierRankings,
       [tier]: itemsWithTierRating
     };
-  }, itemsByTierInitial);
+  }, {});
 
   const itemsWithoutRankings = itemsWithUserRatings.filter(item => {
     return !item.rating;
   });
 
-  console.log("itemsWithoutRatings");
-
   return {
     ...itemsByTier,
     Unranked: itemsWithoutRankings
   };
+};
+
+// a little function to help us with reordering the result
+const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+export const reorderRankings = (
+  itemsByRanking: ItemWithUserRatingByRating,
+  source: any,
+  destination: any
+) => {
+  const current = [...itemsByRanking[source.droppableId]];
+  const next = [...itemsByRanking[destination.droppableId]];
+  const target = current[source.index];
+
+  // moving to same list
+  if (source.droppableId === destination.droppableId) {
+    const reordered = reorder(current, source.index, destination.index);
+    const result = {
+      ...itemsByRanking,
+      [source.droppableId]: reordered
+    };
+    return result;
+  }
+
+  // moving to different list
+
+  // remove from original
+  current.splice(source.index, 1);
+  // insert into next
+  next.splice(destination.index, 0, target);
+
+  const result = {
+    ...itemsByRanking,
+    [source.droppableId]: current,
+    [destination.droppableId]: next
+  };
+
+  return result;
 };

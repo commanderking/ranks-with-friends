@@ -51,6 +51,16 @@ class TierTableContainer extends React.Component<
     });
   };
 
+  componentDidMount() {
+    const mode = queryString.parse(location.search).mode;
+    console.log("mode", mode);
+    if (mode === "edit") {
+      this.setState({
+        editMode: true
+      });
+    }
+  }
+
   render() {
     const { itemRatings, editMode } = this.state;
     const { match, location } = this.props;
