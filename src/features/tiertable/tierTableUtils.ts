@@ -142,6 +142,16 @@ const getItemsWithUserRankings = (
   return itemsWithUserRatings;
 };
 
+export const getItemsWithoutRankings = (
+  activity: Activity,
+  userId: string
+): Array<ItemWithUserRating> => {
+  const items = getItemsWithUserRankings(activity, userId);
+  return items.filter(item => {
+    return !item.rating;
+  });
+};
+
 export const groupItemsByUserRanking = (
   activity: Activity,
   userId: string
@@ -158,13 +168,8 @@ export const groupItemsByUserRanking = (
     };
   }, {});
 
-  const itemsWithoutRankings = itemsWithUserRatings.filter(item => {
-    return !item.rating;
-  });
-
   return {
-    ...itemsByTier,
-    Unranked: itemsWithoutRankings
+    ...itemsByTier
   };
 };
 
@@ -179,21 +184,38 @@ const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
 
 export const reorderRankings = (
   itemsByRanking: ItemWithUserRatingByRating,
+  unrankedItems: Array<ItemWithUserRating>,
   source: any,
   destination: any
 ) => {
-  const current = [...itemsByRanking[source.droppableId]];
-  const next = [...itemsByRanking[destination.droppableId]];
+  const itemsByRankingsAndUnraked = {
+    ...itemsByRanking,
+    unranked: unrankedItems
+  };
+
+  const current = [...itemsByRankingsAndUnraked[source.droppableId]];
+  const next = [...itemsByRankingsAndUnraked[destination.droppableId]];
   const target = current[source.index];
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
     const reordered = reorder(current, source.index, destination.index);
     const result = {
-      ...itemsByRanking,
+      ...itemsByRankingsAndUnraked,
       [source.droppableId]: reordered
     };
-    return result;
+
+    console.log(_.pick(result, ["unranked"]));
+    return {
+      itemsByRanking: _.omit(result, ["unranked"]),
+      unrankedItems: _.pick(result, ["unranked"]).unranked
+    };
+    /*
+    return {
+      itemsByRanking: _.pick(result, ["S", "A", "B", "C", "D", "E", "F"]),
+      unrankedItems: _.pick(result, ["unranked"])
+    };
+    */
   }
 
   // moving to different list
@@ -204,10 +226,24 @@ export const reorderRankings = (
   next.splice(destination.index, 0, target);
 
   const result = {
-    ...itemsByRanking,
+    ...itemsByRankingsAndUnraked,
     [source.droppableId]: current,
     [destination.droppableId]: next
   };
 
-  return result;
+  console.log({
+    itemsByRanking: _.omit(result, ["unranked"]),
+    unrankedItems: _.pick(result, ["unranked"])
+  });
+
+  return {
+    itemsByRanking: _.omit(result, ["unranked"]),
+    unrankedItems: _.pick(result, ["unranked"]).unranked
+  };
+  /*
+  return {
+    itemsByRanking: _.pick(result, ["S", "A", "B", "C", "D", "E", "F"]),
+    unrankedItems: _.pick(result, ["unranked"])
+  };
+  */
 };

@@ -45,5 +45,4 @@ export interface ItemWithUserRating {
 
 export interface ItemWithUserRatingByRating {
   [tier: string]: Array<ItemWithUserRating>;
-  Unranked: Array<ItemWithUserRating>;
 }
