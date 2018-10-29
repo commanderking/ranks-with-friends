@@ -75,8 +75,6 @@ class TierTableEdit extends React.Component<
       result.destination
     );
 
-    console.log("unrankedItems", unrankedItems);
-
     this.setState({
       itemsByRanking,
       unrankedItems

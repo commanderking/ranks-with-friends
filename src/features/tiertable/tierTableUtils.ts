@@ -6,7 +6,8 @@ import {
   CategoryNameAndScores,
   TierTableDataRow,
   ItemWithUserRating,
-  ItemWithUserRatingByRating
+  ItemWithUserRatingByRating,
+  ItemWithUserRatingByRatingAndUnranked
 } from "./TierTableTypes";
 import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
 
@@ -182,40 +183,41 @@ const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
   return result;
 };
 
+const separateItemsWithRankingsAndUnranked = (
+  result: ItemWithUserRatingByRatingAndUnranked
+) => {
+  return {
+    itemsByRanking: _.omit(result, ["unranked"]),
+    unrankedItems: _.pick(result, ["unranked"]).unranked
+  };
+};
+
 export const reorderRankings = (
   itemsByRanking: ItemWithUserRatingByRating,
   unrankedItems: Array<ItemWithUserRating>,
   source: any,
   destination: any
 ) => {
-  const itemsByRankingsAndUnraked = {
+  // Need to combine tiers and unranked into one object for easier updating of
+  // moved item if it's moved from ranked area to unranked or vice versa
+  const itemsByRankingsAndUnranked = {
     ...itemsByRanking,
     unranked: unrankedItems
   };
 
-  const current = [...itemsByRankingsAndUnraked[source.droppableId]];
-  const next = [...itemsByRankingsAndUnraked[destination.droppableId]];
+  const current = [...itemsByRankingsAndUnranked[source.droppableId]];
+  const next = [...itemsByRankingsAndUnranked[destination.droppableId]];
   const target = current[source.index];
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
     const reordered = reorder(current, source.index, destination.index);
     const result = {
-      ...itemsByRankingsAndUnraked,
+      ...itemsByRankingsAndUnranked,
       [source.droppableId]: reordered
     };
 
-    console.log(_.pick(result, ["unranked"]));
-    return {
-      itemsByRanking: _.omit(result, ["unranked"]),
-      unrankedItems: _.pick(result, ["unranked"]).unranked
-    };
-    /*
-    return {
-      itemsByRanking: _.pick(result, ["S", "A", "B", "C", "D", "E", "F"]),
-      unrankedItems: _.pick(result, ["unranked"])
-    };
-    */
+    return separateItemsWithRankingsAndUnranked(result);
   }
 
   // moving to different list
@@ -226,24 +228,10 @@ export const reorderRankings = (
   next.splice(destination.index, 0, target);
 
   const result = {
-    ...itemsByRankingsAndUnraked,
+    ...itemsByRankingsAndUnranked,
     [source.droppableId]: current,
     [destination.droppableId]: next
   };
 
-  console.log({
-    itemsByRanking: _.omit(result, ["unranked"]),
-    unrankedItems: _.pick(result, ["unranked"])
-  });
-
-  return {
-    itemsByRanking: _.omit(result, ["unranked"]),
-    unrankedItems: _.pick(result, ["unranked"]).unranked
-  };
-  /*
-  return {
-    itemsByRanking: _.pick(result, ["S", "A", "B", "C", "D", "E", "F"]),
-    unrankedItems: _.pick(result, ["unranked"])
-  };
-  */
+  return separateItemsWithRankingsAndUnranked(result);
 };
