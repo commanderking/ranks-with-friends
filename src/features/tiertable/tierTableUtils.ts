@@ -6,7 +6,8 @@ import {
   CategoryNameAndScores,
   TierTableDataRow,
   ItemWithUserRating,
-  ItemWithUserRatingByRating
+  ItemWithUserRatingByRating,
+  ItemWithUserRatingByRatingAndUnranked
 } from "./TierTableTypes";
 import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
 
@@ -142,6 +143,16 @@ const getItemsWithUserRankings = (
   return itemsWithUserRatings;
 };
 
+export const getItemsWithoutRankings = (
+  activity: Activity,
+  userId: string
+): Array<ItemWithUserRating> => {
+  const items = getItemsWithUserRankings(activity, userId);
+  return items.filter(item => {
+    return !item.rating;
+  });
+};
+
 export const groupItemsByUserRanking = (
   activity: Activity,
   userId: string
@@ -158,13 +169,8 @@ export const groupItemsByUserRanking = (
     };
   }, {});
 
-  const itemsWithoutRankings = itemsWithUserRatings.filter(item => {
-    return !item.rating;
-  });
-
   return {
-    ...itemsByTier,
-    Unranked: itemsWithoutRankings
+    ...itemsByTier
   };
 };
 
@@ -177,23 +183,41 @@ const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
   return result;
 };
 
+const separateItemsWithRankingsAndUnranked = (
+  result: ItemWithUserRatingByRatingAndUnranked
+) => {
+  return {
+    itemsByRanking: _.omit(result, ["unranked"]),
+    unrankedItems: _.pick(result, ["unranked"]).unranked
+  };
+};
+
 export const reorderRankings = (
   itemsByRanking: ItemWithUserRatingByRating,
+  unrankedItems: Array<ItemWithUserRating>,
   source: any,
   destination: any
 ) => {
-  const current = [...itemsByRanking[source.droppableId]];
-  const next = [...itemsByRanking[destination.droppableId]];
+  // Need to combine tiers and unranked into one object for easier updating of
+  // moved item if it's moved from ranked area to unranked or vice versa
+  const itemsByRankingsAndUnranked = {
+    ...itemsByRanking,
+    unranked: unrankedItems
+  };
+
+  const current = [...itemsByRankingsAndUnranked[source.droppableId]];
+  const next = [...itemsByRankingsAndUnranked[destination.droppableId]];
   const target = current[source.index];
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
     const reordered = reorder(current, source.index, destination.index);
     const result = {
-      ...itemsByRanking,
+      ...itemsByRankingsAndUnranked,
       [source.droppableId]: reordered
     };
-    return result;
+
+    return separateItemsWithRankingsAndUnranked(result);
   }
 
   // moving to different list
@@ -204,10 +228,10 @@ export const reorderRankings = (
   next.splice(destination.index, 0, target);
 
   const result = {
-    ...itemsByRanking,
+    ...itemsByRankingsAndUnranked,
     [source.droppableId]: current,
     [destination.droppableId]: next
   };
 
-  return result;
+  return separateItemsWithRankingsAndUnranked(result);
 };
