@@ -46,7 +46,9 @@ const getDraggableItemStyle = (provided: any) => ({
   backgroundColor: "gray",
   height: "50px",
   padding: "8px",
-  margin: "0 8px 0 0",
+  margin: "8px 8px",
+  minWidth: "100px",
+  maxWidth: "150px",
   overflow: "auto",
   ...provided.draggableProps.style
 });
@@ -97,7 +99,7 @@ class TierTableEdit extends React.Component<
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 3fr"
+            gridTemplateColumns: "1fr 5fr"
           }}
         >
           <div id="tier-unranked-wrapper">
@@ -143,9 +145,17 @@ class TierTableEdit extends React.Component<
             </Droppable>
           </div>
           <div id="tiers-wrapper">
+            <h2> Your Rankings</h2>
             {_.map(itemsByRanking, (itemsInGroup, key) => {
               return (
-                <div id={`tier-${key}-wrapper`} key={`tier-${key}-wrapper`}>
+                <div
+                  id={`tier-${key}-wrapper`}
+                  key={`tier-${key}-wrapper`}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 9fr"
+                  }}
+                >
                   <h2>{key}</h2>
 
                   <Droppable

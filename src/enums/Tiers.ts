@@ -1,16 +1,11 @@
 // Users can only select tiers from the dropdown
-export const tiers: Tiers[] = ["F", "E", "D", "C", "B", "A", "S"];
+export const tiers: Tiers[] = ["S", "A", "B", "C", "D"];
 
-export type Tiers = "F" | "E" | "D" | "C" | "B" | "A" | "S";
+export type Tiers = "D" | "C" | "B" | "A" | "S";
 
 // When tiers of different friends are averaged for overall score though,
 //we want to give more granular ratings
 export const overallTiers: OverallTiers[] = [
-  "F",
-  "F+",
-  "E-",
-  "E",
-  "E+",
   "D-",
   "D",
   "D+",
@@ -28,11 +23,6 @@ export const overallTiers: OverallTiers[] = [
 ];
 
 export type OverallTiers =
-  | "F"
-  | "F+"
-  | "E-"
-  | "E"
-  | "E+"
   | "D-"
   | "D"
   | "D+"

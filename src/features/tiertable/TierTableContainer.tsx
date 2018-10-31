@@ -72,6 +72,7 @@ class TierTableContainer extends React.Component<
           if (error) return <p>Error :(</p>;
 
           const hasCompleteData = data && data.activity && userId;
+          console.log(data);
           if (hasCompleteData && !editMode) {
             return (
               <div>
