@@ -1,11 +1,7 @@
 import React from "react";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult
-} from "react-beautiful-dnd";
-import _ from "lodash";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import UnrankedDropArea from "./UnrankedDropArea";
+import RankedItemsDropArea from "./RankedItemsDropArea";
 import { Activity } from "../../../serverTypes/graphql";
 import {
   groupItemsByUserRanking,
@@ -27,31 +23,6 @@ interface TierTableEditState {
   itemsByRanking: ItemWithUserRatingByRating;
   unrankedItems: Array<ItemWithUserRating>;
 }
-
-const getDroppableStyle = () => ({
-  backgroundColor: "orange",
-  display: "flex",
-  padding: "8px",
-  margin: "8px",
-  overflow: "auto"
-});
-
-const getDroppableVerticalStyle = () => ({
-  backgroundColor: "orange",
-  padding: "8px"
-});
-
-const getDraggableItemStyle = (provided: any) => ({
-  userSelect: "none",
-  backgroundColor: "gray",
-  height: "50px",
-  padding: "8px",
-  margin: "8px 8px",
-  minWidth: "100px",
-  maxWidth: "150px",
-  overflow: "auto",
-  ...provided.draggableProps.style
-});
 
 class TierTableEdit extends React.Component<
   TierTableEditProps,
@@ -102,103 +73,8 @@ class TierTableEdit extends React.Component<
             gridTemplateColumns: "1fr 5fr"
           }}
         >
-          <div id="tier-unranked-wrapper">
-            <h2> Unranked</h2>
-            <Droppable
-              droppableId="unranked"
-              direction="vertical"
-              key="unranked-drop-area"
-            >
-              {provided => {
-                return (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    style={getDroppableVerticalStyle()}
-                  >
-                    {unrankedItems.map((item, index) => {
-                      return (
-                        <div>
-                          <Draggable
-                            draggableId={item.itemId}
-                            key={item.itemId}
-                            index={index}
-                          >
-                            {provided => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={getDraggableItemStyle(provided)}
-                              >
-                                {item.name}
-                              </div>
-                            )}
-                          </Draggable>
-                        </div>
-                      );
-                    })}
-                    {provided.placeholder}
-                  </div>
-                );
-              }}
-            </Droppable>
-          </div>
-          <div id="tiers-wrapper">
-            <h2> Your Rankings</h2>
-            {_.map(itemsByRanking, (itemsInGroup, key) => {
-              return (
-                <div
-                  id={`tier-${key}-wrapper`}
-                  key={`tier-${key}-wrapper`}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 9fr"
-                  }}
-                >
-                  <h2>{key}</h2>
-
-                  <Droppable
-                    droppableId={`${key}`}
-                    key={key}
-                    direction="horizontal"
-                  >
-                    {provided => {
-                      return (
-                        <div
-                          style={getDroppableStyle()}
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                        >
-                          {itemsInGroup.map(
-                            (item: ItemWithUserRating, index: number) => (
-                              <Draggable
-                                draggableId={item.itemId}
-                                key={item.itemId}
-                                index={index}
-                              >
-                                {provided => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    style={getDraggableItemStyle(provided)}
-                                  >
-                                    {item.name}
-                                  </div>
-                                )}
-                              </Draggable>
-                            )
-                          )}
-                          {provided.placeholder}
-                        </div>
-                      );
-                    }}
-                  </Droppable>
-                </div>
-              );
-            })}
-          </div>
+          <UnrankedDropArea unrankedItems={unrankedItems} />
+          <RankedItemsDropArea itemsByRanking={itemsByRanking} />
         </div>
       </DragDropContext>
     );
