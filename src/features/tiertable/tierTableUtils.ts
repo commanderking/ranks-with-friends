@@ -235,3 +235,19 @@ export const reorderRankings = (
 
   return separateItemsWithRankingsAndUnranked(result);
 };
+
+export const flattenRatedItemsIntoArray = (
+  ratedItemsByRating: ItemWithUserRatingByRating
+): Array<ItemWithUserRating> => {
+  const ratedItems = _.reduce(
+    ratedItemsByRating,
+    (allItems, tier) => {
+      const allItemsInEachTier = tier.map(item => {
+        return [...allItems, item];
+      });
+      return _.flatten(allItemsInEachTier);
+    },
+    []
+  );
+  return ratedItems;
+};

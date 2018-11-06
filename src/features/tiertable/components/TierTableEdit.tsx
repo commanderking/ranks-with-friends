@@ -6,7 +6,8 @@ import { Activity } from "../../../serverTypes/graphql";
 import {
   groupItemsByUserRanking,
   reorderRankings,
-  getItemsWithoutRankings
+  getItemsWithoutRankings,
+  flattenRatedItemsIntoArray
 } from "../tierTableUtils";
 import {
   ItemWithUserRating,
@@ -54,8 +55,14 @@ class TierTableEdit extends React.Component<
     });
   };
 
+  submitRatings = () => {
+    const ratedItems = flattenRatedItemsIntoArray(this.state.itemsByRanking);
+    console.log("ratedItems", ratedItems);
+  };
+
   componentDidMount() {
     const { data, userId } = this.props;
+
     this.setState({
       itemsByRanking: groupItemsByUserRanking(data.activity, userId),
       unrankedItems: getItemsWithoutRankings(data.activity, userId)
@@ -67,6 +74,13 @@ class TierTableEdit extends React.Component<
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <h1>Edit your Ratings</h1>
+        <button
+          onClick={() => {
+            this.submitRatings();
+          }}
+        >
+          Submit New Ratings
+        </button>
         <div
           style={{
             display: "grid",
