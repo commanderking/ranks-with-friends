@@ -252,3 +252,11 @@ export const flattenRatedItemsIntoArray = (
   );
   return ratedItems;
 };
+
+export const userHasRatingsForActivity = (
+  activityRatings: Array<RatingWithFriendInfo>,
+  userId: string
+): boolean =>
+  Boolean(
+    activityRatings.find(activityRating => activityRating.friendId === userId)
+  );
