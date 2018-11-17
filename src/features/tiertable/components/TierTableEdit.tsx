@@ -9,15 +9,20 @@ import {
   getItemsWithoutRankings,
   flattenRatedItemsIntoArray
 } from "../tierTableUtils";
+import { Mutation } from "react-apollo";
 import {
   ItemWithUserRating,
   ItemWithUserRatingByRating
 } from "../TierTableTypes";
+import { UPDATE_ACTIVITY_RATING } from "../TierTableQueries";
+
 interface TierTableEditProps {
   data: {
     activity: Activity;
   };
   userId: string;
+  activityId: string;
+  leaveEditMode: Function;
 }
 
 interface TierTableEditState {
@@ -55,9 +60,10 @@ class TierTableEdit extends React.Component<
     });
   };
 
-  submitRatings = () => {
+  getRatingsToSubmit = () => {
     const ratedItems = flattenRatedItemsIntoArray(this.state.itemsByRanking);
     console.log("ratedItems", ratedItems);
+    return ratedItems;
   };
 
   componentDidMount() {
@@ -70,17 +76,36 @@ class TierTableEdit extends React.Component<
   }
 
   render() {
+    const { userId, activityId, leaveEditMode } = this.props;
     const { itemsByRanking, unrankedItems } = this.state;
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <h1>Edit your Ratings</h1>
-        <button
-          onClick={() => {
-            this.submitRatings();
-          }}
+        <Mutation
+          mutation={UPDATE_ACTIVITY_RATING}
+          key={"updateActivityRating"}
         >
-          Submit New Ratings
-        </button>
+          {(updateActivityRating, { loading: mutationLoading }) => {
+            if (mutationLoading) return <p>Loading...</p>;
+
+            return (
+              <button
+                onClick={e => {
+                  updateActivityRating({
+                    variables: {
+                      activityId,
+                      friendId: userId,
+                      itemRatings: JSON.stringify(this.getRatingsToSubmit())
+                    }
+                  });
+                }}
+              >
+                Confirm Ratings
+              </button>
+            );
+          }}
+        </Mutation>
+        <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
         <div
           style={{
             display: "grid",

@@ -241,13 +241,15 @@ export const flattenRatedItemsIntoArray = (
 ): Array<ItemWithUserRating> => {
   const ratedItems = _.reduce(
     ratedItemsByRating,
-    (allItems, tier) => {
+    (allItems, tier, key) => {
+      // Add rating to each item
       const allItemsInEachTier = tier.map(item => {
-        return [...allItems, item];
+        return [{ ...item, rating: key }];
       });
-      return _.flatten(allItemsInEachTier);
+      return _.flatten([...allItems, ...allItemsInEachTier]);
     },
     []
   );
+  console.log("ratedItems", ratedItems);
   return ratedItems;
 };
