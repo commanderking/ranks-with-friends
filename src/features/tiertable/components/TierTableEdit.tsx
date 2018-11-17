@@ -62,7 +62,6 @@ class TierTableEdit extends React.Component<
 
   getRatingsToSubmit = () => {
     const ratedItems = flattenRatedItemsIntoArray(this.state.itemsByRanking);
-    console.log("ratedItems", ratedItems);
     return ratedItems;
   };
 

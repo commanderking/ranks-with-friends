@@ -250,6 +250,5 @@ export const flattenRatedItemsIntoArray = (
     },
     []
   );
-  console.log("ratedItems", ratedItems);
   return ratedItems;
 };
