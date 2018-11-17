@@ -1,9 +1,8 @@
 import React from "react";
 import TierTable from "./TierTable";
-import { Query, Mutation } from "react-apollo";
-import { ACTIVITY_QUERY, ADD_ACTIVITY_RATING } from "./TierTableQueries";
+import { Query } from "react-apollo";
+import { ACTIVITY_QUERY } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
-import { hasFriendCompletedActivityRating } from "./tierTableUtils";
 import queryString from "query-string";
 import TierTableEdit from "./components/TierTableEdit";
 export interface TierTableState {
@@ -51,6 +50,12 @@ class TierTableContainer extends React.Component<
     });
   };
 
+  leaveEditMode = () => {
+    this.setState({
+      editMode: false
+    });
+  };
+
   componentDidMount() {
     const mode = queryString.parse(location.search).mode;
     if (mode === "edit") {
@@ -61,7 +66,7 @@ class TierTableContainer extends React.Component<
   }
 
   render() {
-    const { itemRatings, editMode } = this.state;
+    const { editMode } = this.state;
     const { match, location } = this.props;
     const userId = queryString.parse(location.search).user;
     const activityId = match.params.activityId;
@@ -72,63 +77,30 @@ class TierTableContainer extends React.Component<
           if (error) return <p>Error :(</p>;
 
           const hasCompleteData = data && data.activity && userId;
-          console.log(data);
           if (hasCompleteData && !editMode) {
             return (
               <div>
                 <h1>{data.activity.title}</h1>
-                <Mutation
-                  mutation={ADD_ACTIVITY_RATING}
-                  key={"AddActivityRating"}
-                  refetchQueries={() => [
-                    {
-                      query: ACTIVITY_QUERY,
-                      variables: { activityId }
-                    }
-                  ]}
-                  awaitRefetchQueries
-                >
-                  {(
-                    addActivityRating,
-                    { loading: mutationLoading, data: mutationData }
-                  ) => {
-                    if (mutationLoading) return <p>Loading...</p>;
-
-                    return (
-                      <div>
-                        <TierTable
-                          data={data}
-                          setRating={this.setRating}
-                          userId={userId}
-                        />
-                        {hasFriendCompletedActivityRating(
-                          data.activity,
-                          userId
-                        ) && (
-                          <button
-                            onClick={e => {
-                              addActivityRating({
-                                variables: {
-                                  activityId,
-                                  friendId: userId,
-                                  itemRatings: JSON.stringify(itemRatings)
-                                }
-                              });
-                            }}
-                          >
-                            Confirm Ratings
-                          </button>
-                        )}
-                      </div>
-                    );
-                  }}
-                </Mutation>
+                <div>
+                  <TierTable
+                    data={data}
+                    setRating={this.setRating}
+                    userId={userId}
+                  />
+                </div>
                 <button onClick={this.enterEditMode}>Edit Ratings</button>
               </div>
             );
           }
           if (hasCompleteData && editMode) {
-            return <TierTableEdit data={data} userId={userId} />;
+            return (
+              <TierTableEdit
+                data={data}
+                userId={userId}
+                activityId={activityId}
+                leaveEditMode={this.leaveEditMode}
+              />
+            );
           }
           return <div>Could not get needed data</div>;
         }}

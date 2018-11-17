@@ -50,3 +50,19 @@ export const DELETE_ACTIVITY_RATING = gql`
     }
   }
 `;
+
+export const UPDATE_ACTIVITY_RATING = gql`
+  mutation updateActivityRating(
+    $activityId: String!
+    $friendId: String!
+    $itemRatings: String!
+  ) {
+    updateActivityRatings(
+      activityId: $activityId
+      friendId: $friendId
+      itemRatings: $itemRatings
+    ) {
+      matchedCount
+    }
+  }
+`;
