@@ -102,7 +102,12 @@ class TierTableContainer extends React.Component<
               />
             );
           }
-          return <div>Could not get needed data</div>;
+          return (
+            <div>
+              <span>Could not get needed data</span>
+              <ul>{!userId && <li>No user Id found </li>}</ul>
+            </div>
+          );
         }}
       </Query>
     );
