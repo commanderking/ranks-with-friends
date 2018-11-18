@@ -16,6 +16,7 @@ import {
 } from "../TierTableTypes";
 import { UpdateRatingButton } from "./UpdateRatingButton";
 import { NewRatingButton } from "./NewRatingButton";
+import { css } from "emotion";
 
 interface TierTableEditProps {
   data: {
@@ -96,10 +97,10 @@ class TierTableEdit extends React.Component<
         )}
         <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 5fr"
-          }}
+          className={css`
+            display: grid;
+            grid-template-columns: 1fr 5fr;
+          `}
         >
           <UnrankedDropArea unrankedItems={unrankedItems} />
           <RankedItemsDropArea itemsByRanking={itemsByRanking} />

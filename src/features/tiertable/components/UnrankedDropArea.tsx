@@ -1,15 +1,16 @@
 import React from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
+import DraggableTile from "./DraggableTile";
 
 const getDroppableVerticalStyle = () => ({
-  backgroundColor: "orange",
+  backgroundColor: "rgba(255, 0, 0, 0.7)",
   padding: "8px"
 });
 
 const UnrankedDropArea = ({ unrankedItems }: any) => {
   return (
     <div id="tier-unranked-wrapper">
-      <h2> Unranked</h2>
+      <h2>Unrated Items</h2>
       <Droppable
         droppableId="unranked"
         direction="vertical"
@@ -36,7 +37,9 @@ const UnrankedDropArea = ({ unrankedItems }: any) => {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                         >
-                          {item.name}
+                          <DraggableTile dropAreaType="vertical">
+                            {item.name}
+                          </DraggableTile>
                         </div>
                       )}
                     </Draggable>

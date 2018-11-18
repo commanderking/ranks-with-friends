@@ -2,31 +2,13 @@ import React from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import _ from "lodash";
 import { ItemWithUserRating } from "../TierTableTypes";
-
-const getDroppableStyle = () => ({
-  backgroundColor: "orange",
-  display: "flex",
-  padding: "8px",
-  margin: "8px",
-  overflow: "auto"
-});
-
-const getDraggableItemStyle = (provided: any) => ({
-  userSelect: "none",
-  backgroundColor: "gray",
-  height: "50px",
-  padding: "8px",
-  margin: "8px 8px",
-  minWidth: "100px",
-  maxWidth: "150px",
-  overflow: "auto",
-  ...provided.draggableProps.style
-});
+import DraggableTile from "./DraggableTile";
+import { css } from "emotion";
 
 const RankedItemsDropArea = ({ itemsByRanking }: any) => {
   return (
     <div id="tiers-wrapper">
-      <h2> Your Rankings</h2>
+      <h2>Your Ratings</h2>
       {_.map(itemsByRanking, (itemsInGroup, key) => {
         return (
           <div
@@ -34,16 +16,34 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
             key={`tier-${key}-wrapper`}
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 9fr"
+              gridTemplateColumns: "1fr 14fr"
             }}
           >
-            <h2>{key}</h2>
+            <h2
+              className={css`
+                display: flex;
+                justify-content: center;
+                align-content: right;
+                flex-direction: column;
+                text-align: right;
+                padding-right: 10px;
+              `}
+            >
+              {key}
+            </h2>
 
             <Droppable droppableId={`${key}`} key={key} direction="horizontal">
               {provided => {
                 return (
                   <div
-                    style={getDroppableStyle()}
+                    className={css`
+                      background-color: rgba(255, 0, 0, 0.7);
+                      display: flex;
+                      padding: 8px;
+                      margin: 8px;
+                      overflow: auto;
+                      min-height: 80px;
+                    `}
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
@@ -59,9 +59,10 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              style={getDraggableItemStyle(provided)}
                             >
-                              {item.name}
+                              <DraggableTile dropAreaType="horizontal">
+                                {item.name}
+                              </DraggableTile>
                             </div>
                           )}
                         </Draggable>
