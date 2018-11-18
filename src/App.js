@@ -8,7 +8,7 @@ import gql from "graphql-tag";
 import RouteConfig from "./routes/routeConfig";
 // TODO: Update client based on graphql url
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
+  uri: "https://ranks-with-friends-server.herokuapp.com/graphql"
 });
 
 class App extends Component {
