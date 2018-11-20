@@ -39,7 +39,6 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
                     className={css`
                       background-color: rgba(255, 0, 0, 0.7);
                       display: flex;
-                      padding: 8px;
                       margin: 8px;
                       overflow: auto;
                       min-height: 80px;
