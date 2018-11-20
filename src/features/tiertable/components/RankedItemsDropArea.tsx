@@ -21,8 +21,6 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
           >
             <h2
               className={css`
-                display: -moz-flex;
-                display: -webkit-flex;
                 display: flex;
                 justify-content: center;
                 align-content: right;
@@ -40,8 +38,6 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
                   <div
                     className={css`
                       background-color: rgba(255, 0, 0, 0.7);
-                      display: -moz-flex;
-                      display: -webkit-flex;
                       display: flex;
                       margin: 8px;
                       overflow: auto;

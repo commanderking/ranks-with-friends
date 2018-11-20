@@ -98,8 +98,6 @@ class TierTableEdit extends React.Component<
         <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
         <div
           className={css`
-            display: -ms-grid;
-            display: -webkit-grid;
             display: grid;
             grid-template-columns: 1fr 5fr;
             grid-template-areas: "unranked ranked";

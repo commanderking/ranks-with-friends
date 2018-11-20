@@ -32,8 +32,6 @@ const DraggableTile = styled("div")`
   border-color: grey;
 
   // Related to centering text (vertically and horizontally) in the draggable area
-  display: -moz-flex;
-  display: -webkit-flex;
   display: flex;
   justify-content: center;
   align-content: center;
