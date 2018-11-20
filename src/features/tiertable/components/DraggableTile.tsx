@@ -15,8 +15,6 @@ const dropAreaTypeStyle = (props: DraggableTileProps): string => {
   if (dropAreaType === "vertical") {
     return css`
       margin: auto;
-      margin-bottom: 16px;
-      margin-top: 8px;
     `;
   }
   return "";

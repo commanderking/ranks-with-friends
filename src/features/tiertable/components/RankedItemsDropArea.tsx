@@ -43,7 +43,6 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
                       display: -moz-flex;
                       display: -webkit-flex;
                       display: flex;
-                      padding: 8px;
                       margin: 8px;
                       overflow: auto;
                       min-height: 80px;

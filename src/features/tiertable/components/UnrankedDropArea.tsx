@@ -1,11 +1,7 @@
 import React from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import DraggableTile from "./DraggableTile";
-
-const getDroppableVerticalStyle = () => ({
-  backgroundColor: "rgba(255, 0, 0, 0.7)",
-  padding: "8px"
-});
+import { css } from "react-emotion";
 
 const UnrankedDropArea = ({ unrankedItems }: any) => {
   return (
@@ -21,7 +17,14 @@ const UnrankedDropArea = ({ unrankedItems }: any) => {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              style={getDroppableVerticalStyle()}
+              className={css`
+                background-color: rgba(255, 0, 0, 0.7);
+                max-height: 500px;
+                overflow: scroll;
+                display: flex;
+                flex-direction: column;
+                padding: 8px 8px 0;
+              `}
             >
               {unrankedItems.map((item: any, index: any) => {
                 return (
