@@ -101,6 +101,9 @@ class TierTableEdit extends React.Component<
             display: grid;
             grid-template-columns: 1fr 5fr;
             grid-template-areas: "unranked ranked";
+            padding: 20px;
+            border: 2px solid black;
+            margin: 5px;
           `}
         >
           <UnrankedDropArea unrankedItems={unrankedItems} />
