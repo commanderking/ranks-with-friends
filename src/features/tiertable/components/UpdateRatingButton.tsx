@@ -6,15 +6,21 @@ interface UpdateRatingButtonProps {
   activityId: string;
   userId: string;
   itemRatings: string;
+  openModal: (data: any) => void;
 }
 
 export const UpdateRatingButton = ({
   activityId,
   userId,
-  itemRatings
+  itemRatings,
+  openModal
 }: UpdateRatingButtonProps) => {
   return (
-    <Mutation mutation={UPDATE_ACTIVITY_RATING} key={"updateActivityRating"}>
+    <Mutation
+      mutation={UPDATE_ACTIVITY_RATING}
+      key={"updateActivityRating"}
+      onCompleted={openModal}
+    >
       {(updateActivityRating, { loading: mutationLoading }) => {
         if (mutationLoading) return <p>Loading...</p>;
 

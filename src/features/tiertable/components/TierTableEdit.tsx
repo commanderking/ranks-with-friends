@@ -1,4 +1,6 @@
 import React from "react";
+import Modal from "react-modal";
+import { css } from "emotion";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import UnrankedDropArea from "./UnrankedDropArea";
 import RankedItemsDropArea from "./RankedItemsDropArea";
@@ -16,8 +18,7 @@ import {
 } from "../TierTableTypes";
 import { UpdateRatingButton } from "./UpdateRatingButton";
 import { NewRatingButton } from "./NewRatingButton";
-import { css } from "emotion";
-
+import RatingConfirmationModal from "./RatingConfirmationModal";
 interface TierTableEditProps {
   data: {
     activity: Activity;
@@ -30,7 +31,10 @@ interface TierTableEditProps {
 interface TierTableEditState {
   itemsByRanking: ItemWithUserRatingByRating;
   unrankedItems: Array<ItemWithUserRating>;
+  modalIsOpen: boolean;
 }
+
+Modal.setAppElement("#root");
 
 class TierTableEdit extends React.Component<
   TierTableEditProps,
@@ -40,9 +44,22 @@ class TierTableEdit extends React.Component<
     super(props);
     this.state = {
       itemsByRanking: { Unranked: [] },
-      unrankedItems: []
+      unrankedItems: [],
+      modalIsOpen: false
     };
   }
+
+  openModal = () => {
+    this.setState({
+      modalIsOpen: true
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      modalIsOpen: false
+    });
+  };
 
   onDragEnd = (result: DropResult) => {
     // dropped outside the list
@@ -78,7 +95,8 @@ class TierTableEdit extends React.Component<
 
   render() {
     const { data, userId, activityId, leaveEditMode } = this.props;
-    const { itemsByRanking, unrankedItems } = this.state;
+    const { itemsByRanking, unrankedItems, modalIsOpen } = this.state;
+
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <h1>Edit your Ratings</h1>
@@ -87,14 +105,23 @@ class TierTableEdit extends React.Component<
             userId={userId}
             activityId={activityId}
             itemRatings={this.getRatingsToSubmit()}
+            openModal={this.openModal}
           />
         ) : (
           <NewRatingButton
             userId={userId}
             activityId={activityId}
             itemRatings={this.getRatingsToSubmit()}
+            openModal={this.openModal}
           />
         )}
+        <RatingConfirmationModal
+          modalIsOpen={modalIsOpen}
+          closeModal={this.closeModal}
+          userId={userId}
+          activityId={activityId}
+          leaveEditMode={leaveEditMode}
+        />
         <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
         <div
           className={css`
