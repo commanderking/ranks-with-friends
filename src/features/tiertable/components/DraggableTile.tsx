@@ -1,25 +1,4 @@
-import styled, { css } from "react-emotion";
-
-interface DraggableTileProps {
-  dropAreaType: "horizontal" | "vertical";
-}
-
-const dropAreaTypeStyle = (props: DraggableTileProps): string => {
-  const { dropAreaType } = props;
-
-  if (dropAreaType === "horizontal") {
-    return css`
-      margin: 8px 8px;
-    `;
-  }
-  if (dropAreaType === "vertical") {
-    return css`
-      margin: auto;
-    `;
-  }
-  return "";
-};
-
+import styled from "react-emotion";
 const DraggableTile = styled("div")`
   user-select: none;
   background-color: white;
@@ -36,7 +15,8 @@ const DraggableTile = styled("div")`
   justify-content: center;
   align-content: center;
   flex-direction: column;
-  ${dropAreaTypeStyle}
+  margin-right: 6px;
+  margin-bottom: 1px;
 `;
 
 export default DraggableTile;

@@ -14,10 +14,12 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
           <div
             id={`tier-${key}-wrapper`}
             key={`tier-${key}-wrapper`}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 14fr"
-            }}
+            className={css`
+              display: grid;
+              grid-template-columns: 1fr 14fr;
+              margin-bottom: 8px;
+              min-height: 89px;
+            `}
           >
             <h2
               className={css`
@@ -39,9 +41,8 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
                     className={css`
                       background-color: rgba(255, 0, 0, 0.7);
                       display: flex;
-                      margin: 8px;
                       overflow: auto;
-                      min-height: 80px;
+                      padding: 8px;
                     `}
                     ref={provided.innerRef}
                     {...provided.droppableProps}
@@ -59,9 +60,7 @@ const RankedItemsDropArea = ({ itemsByRanking }: any) => {
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                             >
-                              <DraggableTile dropAreaType="horizontal">
-                                {item.name}
-                              </DraggableTile>
+                              <DraggableTile>{item.name}</DraggableTile>
                             </div>
                           )}
                         </Draggable>
