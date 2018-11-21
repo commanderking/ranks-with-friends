@@ -1,7 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
 import { css } from "emotion";
-import { Link } from "react-router-dom";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import UnrankedDropArea from "./UnrankedDropArea";
 import RankedItemsDropArea from "./RankedItemsDropArea";
@@ -19,7 +18,7 @@ import {
 } from "../TierTableTypes";
 import { UpdateRatingButton } from "./UpdateRatingButton";
 import { NewRatingButton } from "./NewRatingButton";
-
+import RatingConfirmationModal from "./RatingConfirmationModal";
 interface TierTableEditProps {
   data: {
     activity: Activity;
@@ -96,7 +95,7 @@ class TierTableEdit extends React.Component<
 
   render() {
     const { data, userId, activityId, leaveEditMode } = this.props;
-    const { itemsByRanking, unrankedItems } = this.state;
+    const { itemsByRanking, unrankedItems, modalIsOpen } = this.state;
     const link = `/activity/5b9d837ee7179a7a9fc653fc`;
     console.log("link", link);
     return (
@@ -116,43 +115,14 @@ class TierTableEdit extends React.Component<
             itemRatings={this.getRatingsToSubmit()}
             openModal={this.openModal}
           />
-        )}{" "}
-        <Link
-          to={{
-            pathname: link,
-            search: `?user=${userId}`,
-            state: { activityId }
-          }}
-        >
-          View Results!
-        </Link>
-        <Modal
-          isOpen={this.state.modalIsOpen}
-          contentLabel="Example Modal"
-          style={{
-            content: {
-              top: "50%",
-              left: "50%",
-              right: "auto",
-              bottom: "auto",
-              marginRight: "-50%",
-              transform: "translate(-50%, -50%)",
-              padding: "50px"
-            }
-          }}
-        >
-          <div>Awesome, your ratings have been submitted!</div>
-
-          <Link
-            to={{
-              pathname: `/activity/${activityId}`,
-              search: `?user=${userId}`
-            }}
-          >
-            View Results!
-          </Link>
-          <button onClick={this.closeModal}>Edit Ratings</button>
-        </Modal>
+        )}
+        <RatingConfirmationModal
+          modalIsOpen={modalIsOpen}
+          closeModal={this.closeModal}
+          userId={userId}
+          activityId={activityId}
+          leaveEditMode={leaveEditMode}
+        />
         <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
         <div
           className={css`
