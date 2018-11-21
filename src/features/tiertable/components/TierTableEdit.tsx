@@ -96,8 +96,7 @@ class TierTableEdit extends React.Component<
   render() {
     const { data, userId, activityId, leaveEditMode } = this.props;
     const { itemsByRanking, unrankedItems, modalIsOpen } = this.state;
-    const link = `/activity/5b9d837ee7179a7a9fc653fc`;
-    console.log("link", link);
+
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <h1>Edit your Ratings</h1>
