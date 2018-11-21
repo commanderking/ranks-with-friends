@@ -1,6 +1,6 @@
 import React from "react";
 import { Mutation } from "react-apollo";
-import { UPDATE_ACTIVITY_RATING } from "../TierTableQueries";
+import { ACTIVITY_QUERY, UPDATE_ACTIVITY_RATING } from "../TierTableQueries";
 
 interface UpdateRatingButtonProps {
   activityId: string;
@@ -20,6 +20,14 @@ export const UpdateRatingButton = ({
       mutation={UPDATE_ACTIVITY_RATING}
       key={"updateActivityRating"}
       onCompleted={openModal}
+      refetchQueries={() => [
+        {
+          query: ACTIVITY_QUERY,
+          variables: {
+            activityId
+          }
+        }
+      ]}
     >
       {(updateActivityRating, { loading: mutationLoading }) => {
         if (mutationLoading) return <p>Loading...</p>;
