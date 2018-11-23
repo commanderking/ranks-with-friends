@@ -1,7 +1,6 @@
 import React from "react";
 import Table from "rc-table";
 import { toTableData, getNumericOverallScoreRating } from "./tierTableUtils";
-import { createNewRankingColumn } from "./components/NewRankingColumn";
 import {
   Activity,
   RatingWithFriendInfo,
@@ -81,8 +80,7 @@ const createColumns = (
       ),
       width: 100
     };
-  }),
-  createNewRankingColumn(setRating, activity, userId)
+  })
 ];
 
 // TODO: Create new type for data with Activity as property value
