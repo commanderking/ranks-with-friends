@@ -62,11 +62,12 @@ class TierTableContainer extends React.Component<
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
-          const hasCompleteData = data && data.activity;
+          // If user doesn't exist, we still want a public facing page so modal should
+          // never be open if no userId has been entered into the url
           const isModalOpen = userId
             ? !userHasRatingsForActivity(data.activity.activityRatings, userId)
             : false;
-          if (hasCompleteData) {
+          if (data && data.activity) {
             return (
               <div
                 className={
@@ -77,6 +78,11 @@ class TierTableContainer extends React.Component<
                     : ""
                 }
               >
+                <StartRatingModal
+                  isModalOpen={isModalOpen}
+                  userId={userId}
+                  activityId={activityId}
+                />
                 <h1>{data.activity.title}</h1>
                 {userId && (
                   <Link
@@ -88,19 +94,11 @@ class TierTableContainer extends React.Component<
                     <button>Edit Ratings</button>
                   </Link>
                 )}
-
-                <div>
-                  <StartRatingModal
-                    isModalOpen={isModalOpen}
-                    userId={userId}
-                    activityId={activityId}
-                  />
-                  <TierTable
-                    data={data}
-                    setRating={this.setRating}
-                    userId={userId}
-                  />
-                </div>
+                <TierTable
+                  data={data}
+                  setRating={this.setRating}
+                  userId={userId}
+                />
               </div>
             );
           }
