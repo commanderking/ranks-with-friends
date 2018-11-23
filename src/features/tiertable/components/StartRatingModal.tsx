@@ -6,14 +6,12 @@ interface RatingConfirmationModalProps {
   isModalOpen: boolean;
   userId: string;
   activityId: string;
-  closeModal: () => void;
 }
 
 const StartRatingModal = ({
   isModalOpen,
   userId,
-  activityId,
-  closeModal
+  activityId
 }: RatingConfirmationModalProps) => {
   return (
     <Modal
@@ -37,11 +35,11 @@ const StartRatingModal = ({
 
       <Link
         to={{
-          pathname: `/activity/${activityId}`,
-          search: `?user=${userId}&mode=edit`
+          pathname: `/activity/edit/${activityId}`,
+          search: `?user=${userId}`
         }}
       >
-        <button onClick={closeModal}>Start Rating!</button>
+        <button>Start Rating!</button>
       </Link>
     </Modal>
   );

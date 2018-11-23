@@ -5,16 +5,15 @@ import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
 import queryString from "query-string";
-import TierTableEdit from "./components/TierTableEdit";
 import { userHasRatingsForActivity } from "./tierTableUtils";
-import RatingsConfirmationModal from "./components/StartRatingModal";
+import StartRatingModal from "./components/StartRatingModal";
 import { css } from "react-emotion";
+import { Link } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
 export interface TierTableState {
   itemRatings: Array<FriendRating>;
-  editMode: boolean;
   isModalOpen: boolean;
 }
 
@@ -43,7 +42,6 @@ class TierTableContainer extends React.Component<
     super(props);
     this.state = {
       itemRatings: [],
-      editMode: false,
       isModalOpen: false
     };
   }
@@ -55,60 +53,18 @@ class TierTableContainer extends React.Component<
     });
   };
 
-  enterEditMode = () => {
-    this.setState({
-      editMode: true
-    });
-  };
-
-  leaveEditMode = () => {
-    this.setState({
-      editMode: false
-    });
-  };
-
-  closeModal = () => {
-    this.setState({
-      isModalOpen: false
-    });
-  };
-
-  componentDidMount() {
-    const mode = queryString.parse(location.search).mode;
-    if (mode === "edit") {
-      this.setState({
-        editMode: true
-      });
-    }
-  }
-
   render() {
-    const { editMode, isModalOpen } = this.state;
     const { match, location } = this.props;
     const userId = queryString.parse(location.search).user;
     const activityId = match.params.activityId;
     return (
-      <Query
-        query={ACTIVITY_QUERY}
-        variables={{ activityId }}
-        onCompleted={data => {
-          if (
-            data &&
-            data.activity &&
-            !userHasRatingsForActivity(data.activity.activityRatings, userId)
-          ) {
-            this.setState({
-              isModalOpen: true
-            });
-          }
-        }}
-      >
+      <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
           const hasCompleteData = data && data.activity && userId;
-          if (hasCompleteData && !editMode) {
+          if (hasCompleteData) {
             return (
               <div
                 className={
@@ -123,12 +79,24 @@ class TierTableContainer extends React.Component<
                 }
               >
                 <h1>{data.activity.title}</h1>
+                <Link
+                  to={{
+                    pathname: `/activity/edit/${activityId}`,
+                    search: `?user=${userId}`
+                  }}
+                >
+                  <button>Edit Ratings</button>
+                </Link>
                 <div>
-                  <RatingsConfirmationModal
-                    isModalOpen={isModalOpen}
+                  <StartRatingModal
+                    isModalOpen={
+                      !userHasRatingsForActivity(
+                        data.activity.activityRatings,
+                        userId
+                      )
+                    }
                     userId={userId}
                     activityId={activityId}
-                    closeModal={this.closeModal}
                   />
                   <TierTable
                     data={data}
@@ -136,18 +104,7 @@ class TierTableContainer extends React.Component<
                     userId={userId}
                   />
                 </div>
-                <button onClick={this.enterEditMode}>Edit Ratings</button>
               </div>
-            );
-          }
-          if (hasCompleteData && editMode) {
-            return (
-              <TierTableEdit
-                data={data}
-                userId={userId}
-                activityId={activityId}
-                leaveEditMode={this.leaveEditMode}
-              />
             );
           }
           return (

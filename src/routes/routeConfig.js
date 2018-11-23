@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import TierTableContainer from "../features/tiertable/TierTableContainer";
-
+import TierTableEditContainer from "../features/tiertable/TierTableEditContainer";
 const routes = [
   {
     path: "/",
@@ -11,6 +11,11 @@ const routes = [
   {
     path: "/activity/:activityId",
     component: TierTableContainer,
+    exact: true
+  },
+  {
+    path: "/activity/edit/:activityId",
+    component: TierTableEditContainer,
     exact: true
   }
 ];
