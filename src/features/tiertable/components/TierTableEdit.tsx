@@ -36,6 +36,10 @@ interface TierTableEditState {
 
 Modal.setAppElement("#root");
 
+const blurredEdit = css`
+  filter: blur(0.1rem);
+`;
+
 class TierTableEdit extends React.Component<
   TierTableEditProps,
   TierTableEditState
@@ -99,42 +103,44 @@ class TierTableEdit extends React.Component<
 
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
-        <h1>Edit your Ratings</h1>
-        {userHasRatingsForActivity(data.activity.activityRatings, userId) ? (
-          <UpdateRatingButton
+        <div className={modalIsOpen ? blurredEdit : ""}>
+          <h1>Edit your Ratings</h1>
+          {userHasRatingsForActivity(data.activity.activityRatings, userId) ? (
+            <UpdateRatingButton
+              userId={userId}
+              activityId={activityId}
+              itemRatings={this.getRatingsToSubmit()}
+              openModal={this.openModal}
+            />
+          ) : (
+            <NewRatingButton
+              userId={userId}
+              activityId={activityId}
+              itemRatings={this.getRatingsToSubmit()}
+              openModal={this.openModal}
+            />
+          )}
+          <RatingConfirmationModal
+            modalIsOpen={modalIsOpen}
+            closeModal={this.closeModal}
             userId={userId}
             activityId={activityId}
-            itemRatings={this.getRatingsToSubmit()}
-            openModal={this.openModal}
+            leaveEditMode={leaveEditMode}
           />
-        ) : (
-          <NewRatingButton
-            userId={userId}
-            activityId={activityId}
-            itemRatings={this.getRatingsToSubmit()}
-            openModal={this.openModal}
-          />
-        )}
-        <RatingConfirmationModal
-          modalIsOpen={modalIsOpen}
-          closeModal={this.closeModal}
-          userId={userId}
-          activityId={activityId}
-          leaveEditMode={leaveEditMode}
-        />
-        <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
-        <div
-          className={css`
-            display: grid;
-            grid-template-columns: 1fr 5fr;
-            grid-template-areas: "unranked ranked";
-            padding: 20px;
-            border: 2px solid black;
-            margin: 5px;
-          `}
-        >
-          <UnrankedDropArea unrankedItems={unrankedItems} />
-          <RankedItemsDropArea itemsByRanking={itemsByRanking} />
+          <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
+          <div
+            className={css`
+              display: grid;
+              grid-template-columns: 1fr 5fr;
+              grid-template-areas: "unranked ranked";
+              padding: 20px;
+              border: 2px solid black;
+              margin: 5px;
+            `}
+          >
+            <UnrankedDropArea unrankedItems={unrankedItems} />
+            <RankedItemsDropArea itemsByRanking={itemsByRanking} />
+          </div>
         </div>
       </DragDropContext>
     );

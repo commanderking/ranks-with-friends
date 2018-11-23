@@ -1,13 +1,21 @@
 import React from "react";
+import Modal from "react-modal";
 import TierTable from "./TierTable";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
 import queryString from "query-string";
 import TierTableEdit from "./components/TierTableEdit";
+import { userHasRatingsForActivity } from "./tierTableUtils";
+import RatingsConfirmationModal from "./components/StartRatingModal";
+import { css } from "react-emotion";
+
+Modal.setAppElement("#root");
+
 export interface TierTableState {
   itemRatings: Array<FriendRating>;
   editMode: boolean;
+  isModalOpen: boolean;
 }
 
 interface TierTableProps {
@@ -25,6 +33,8 @@ interface TierTableProps {
 // Jeffrey - 5b9d83af36437b9095cc3122
 // Allison - 5b9d83af36437b9095cc3121
 
+// testUser - 5bf22d3ce7179a56e2124e7b
+
 class TierTableContainer extends React.Component<
   TierTableProps,
   TierTableState
@@ -33,7 +43,8 @@ class TierTableContainer extends React.Component<
     super(props);
     this.state = {
       itemRatings: [],
-      editMode: false
+      editMode: false,
+      isModalOpen: false
     };
   }
 
@@ -56,6 +67,12 @@ class TierTableContainer extends React.Component<
     });
   };
 
+  closeModal = () => {
+    this.setState({
+      isModalOpen: false
+    });
+  };
+
   componentDidMount() {
     const mode = queryString.parse(location.search).mode;
     if (mode === "edit") {
@@ -66,12 +83,26 @@ class TierTableContainer extends React.Component<
   }
 
   render() {
-    const { editMode } = this.state;
+    const { editMode, isModalOpen } = this.state;
     const { match, location } = this.props;
     const userId = queryString.parse(location.search).user;
     const activityId = match.params.activityId;
     return (
-      <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
+      <Query
+        query={ACTIVITY_QUERY}
+        variables={{ activityId }}
+        onCompleted={data => {
+          if (
+            data &&
+            data.activity &&
+            !userHasRatingsForActivity(data.activity.activityRatings, userId)
+          ) {
+            this.setState({
+              isModalOpen: true
+            });
+          }
+        }}
+      >
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
@@ -79,9 +110,26 @@ class TierTableContainer extends React.Component<
           const hasCompleteData = data && data.activity && userId;
           if (hasCompleteData && !editMode) {
             return (
-              <div>
+              <div
+                className={
+                  !userHasRatingsForActivity(
+                    data.activity.activityRatings,
+                    userId
+                  )
+                    ? css`
+                        filter: blur(0.3rem);
+                      `
+                    : ""
+                }
+              >
                 <h1>{data.activity.title}</h1>
                 <div>
+                  <RatingsConfirmationModal
+                    isModalOpen={isModalOpen}
+                    userId={userId}
+                    activityId={activityId}
+                    closeModal={this.closeModal}
+                  />
                   <TierTable
                     data={data}
                     setRating={this.setRating}
