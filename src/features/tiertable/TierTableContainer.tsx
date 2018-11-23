@@ -31,7 +31,6 @@ interface TierTableProps {
 // Lin - const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
 // Jeffrey - 5b9d83af36437b9095cc3122
 // Allison - 5b9d83af36437b9095cc3121
-
 // testUser - 5bf22d3ce7179a56e2124e7b
 
 class TierTableContainer extends React.Component<
@@ -63,56 +62,47 @@ class TierTableContainer extends React.Component<
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
 
-          const hasCompleteData = data && data.activity && userId;
-          if (hasCompleteData) {
+          // If user doesn't exist, we still want a public facing page so modal should
+          // never be open if no userId has been entered into the url
+          const isModalOpen = userId
+            ? !userHasRatingsForActivity(data.activity.activityRatings, userId)
+            : false;
+          if (data && data.activity) {
             return (
               <div
                 className={
-                  !userHasRatingsForActivity(
-                    data.activity.activityRatings,
-                    userId
-                  )
+                  isModalOpen
                     ? css`
                         filter: blur(0.3rem);
                       `
                     : ""
                 }
               >
+                <StartRatingModal
+                  isModalOpen={isModalOpen}
+                  userId={userId}
+                  activityId={activityId}
+                />
                 <h1>{data.activity.title}</h1>
-                <Link
-                  to={{
-                    pathname: `/activity/edit/${activityId}`,
-                    search: `?user=${userId}`
-                  }}
-                >
-                  <button>Edit Ratings</button>
-                </Link>
-                <div>
-                  <StartRatingModal
-                    isModalOpen={
-                      !userHasRatingsForActivity(
-                        data.activity.activityRatings,
-                        userId
-                      )
-                    }
-                    userId={userId}
-                    activityId={activityId}
-                  />
-                  <TierTable
-                    data={data}
-                    setRating={this.setRating}
-                    userId={userId}
-                  />
-                </div>
+                {userId && (
+                  <Link
+                    to={{
+                      pathname: `/activity/edit/${activityId}`,
+                      search: `?user=${userId}`
+                    }}
+                  >
+                    <button>Edit Ratings</button>
+                  </Link>
+                )}
+                <TierTable
+                  data={data}
+                  setRating={this.setRating}
+                  userId={userId}
+                />
               </div>
             );
           }
-          return (
-            <div>
-              <span>Could not get needed data</span>
-              <ul>{!userId && <li>No user Id found </li>}</ul>
-            </div>
-          );
+          return <div>Could not get needed data</div>;
         }}
       </Query>
     );
