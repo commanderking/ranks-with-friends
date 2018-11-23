@@ -8,6 +8,7 @@ import queryString from "query-string";
 import TierTableEdit from "./components/TierTableEdit";
 import { userHasRatingsForActivity } from "./tierTableUtils";
 import RatingsConfirmationModal from "./components/StartRatingModal";
+import { css } from "react-emotion";
 
 Modal.setAppElement("#root");
 
@@ -109,7 +110,18 @@ class TierTableContainer extends React.Component<
           const hasCompleteData = data && data.activity && userId;
           if (hasCompleteData && !editMode) {
             return (
-              <div>
+              <div
+                className={
+                  !userHasRatingsForActivity(
+                    data.activity.activityRatings,
+                    userId
+                  )
+                    ? css`
+                        filter: blur(0.3rem);
+                      `
+                    : ""
+                }
+              >
                 <h1>{data.activity.title}</h1>
                 <div>
                   <RatingsConfirmationModal
