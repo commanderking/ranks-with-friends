@@ -19,13 +19,14 @@ import {
 import { UpdateRatingButton } from "./UpdateRatingButton";
 import { NewRatingButton } from "./NewRatingButton";
 import RatingConfirmationModal from "./RatingConfirmationModal";
+import { Link } from "react-router-dom";
+
 interface TierTableEditProps {
   data: {
     activity: Activity;
   };
   userId: string;
   activityId: string;
-  leaveEditMode: Function;
 }
 
 interface TierTableEditState {
@@ -98,7 +99,7 @@ class TierTableEdit extends React.Component<
   }
 
   render() {
-    const { data, userId, activityId, leaveEditMode } = this.props;
+    const { data, userId, activityId } = this.props;
     const { itemsByRanking, unrankedItems, modalIsOpen } = this.state;
 
     return (
@@ -125,9 +126,15 @@ class TierTableEdit extends React.Component<
             closeModal={this.closeModal}
             userId={userId}
             activityId={activityId}
-            leaveEditMode={leaveEditMode}
           />
-          <button onClick={() => leaveEditMode()}>Exit Edit Mode</button>
+          <Link
+            to={{
+              pathname: `/activity/${activityId}`,
+              search: `?user=${userId}`
+            }}
+          >
+            <button>Exit Edit Mode</button>
+          </Link>
           <div
             className={css`
               display: grid;

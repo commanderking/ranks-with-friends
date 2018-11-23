@@ -7,15 +7,13 @@ interface RatingConfirmationModalProps {
   closeModal: () => void;
   userId: string;
   activityId: string;
-  leaveEditMode: Function;
 }
 
 const RatingConfirmationModal = ({
   modalIsOpen,
   closeModal,
   userId,
-  activityId,
-  leaveEditMode
+  activityId
 }: RatingConfirmationModalProps) => {
   return (
     <Modal
@@ -43,7 +41,7 @@ const RatingConfirmationModal = ({
           search: `?user=${userId}`
         }}
       >
-        <button onClick={() => leaveEditMode()}>View Results</button>
+        <button>View Results</button>
       </Link>
       <button onClick={closeModal}>Edit Ratings</button>
     </Modal>
