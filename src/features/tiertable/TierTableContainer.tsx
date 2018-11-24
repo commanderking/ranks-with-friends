@@ -4,7 +4,6 @@ import TierTable from "./TierTable";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
 import { FriendRating } from "../../serverTypes/graphql";
-import queryString from "query-string";
 import { userHasRatingsForActivity } from "./tierTableUtils";
 import StartRatingModal from "./components/StartRatingModal";
 import { css } from "react-emotion";
@@ -26,6 +25,7 @@ interface TierTableProps {
   location: {
     search: string;
   };
+  userId: string;
 }
 
 // Lin - const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
@@ -53,8 +53,7 @@ class TierTableContainer extends React.Component<
   };
 
   render() {
-    const { match, location } = this.props;
-    const userId = queryString.parse(location.search).user;
+    const { match, userId } = this.props;
     const activityId = match.params.activityId;
     return (
       <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
@@ -67,6 +66,8 @@ class TierTableContainer extends React.Component<
           const isModalOpen = userId
             ? !userHasRatingsForActivity(data.activity.activityRatings, userId)
             : false;
+
+          console.log("data.activtiy", data.activity);
           if (data && data.activity) {
             return (
               <div

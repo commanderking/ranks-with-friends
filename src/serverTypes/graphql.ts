@@ -32,6 +32,7 @@ export interface Query {
   getTiersActivity?: (FriendCategory | null)[] | null;
   friend?: Friend | null;
   activity?: Activity | null;
+  getUserInfo?: UserInfo | null;
 }
 
 export interface FriendCategory {
@@ -61,7 +62,7 @@ export interface Activity {
   title: string;
   ratingType: string;
   items: ActivityItem[];
-  activityRatings: RatingWithFriendInfo[];
+  activityRatings: RatingWithFriendInfoQuery[];
 }
 
 export interface ActivityItem {
@@ -69,7 +70,7 @@ export interface ActivityItem {
   name: string;
 }
 
-export interface RatingWithFriendInfo {
+export interface RatingWithFriendInfoQuery {
   activityId: string;
   friendId: string;
   itemRatings: FriendRating[];
@@ -80,6 +81,36 @@ export interface FriendRating {
   itemId: string;
   rating?: string | null;
 }
+
+export interface UserInfo {
+  id: string;
+  username: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  image?: string | null;
+  myActivities?: (string | null)[] | null;
+  friendActivities?: (string | null)[] | null;
+  pendingActivities?: (string | null)[] | null;
+}
+
+export interface Mutations {
+  addActivityRatings?: RatingFromMutations | null;
+  deleteActivityRatings?: DeleteActivityRating | null;
+  updateActivityRatings?: UpdateActivityRatings | null;
+}
+
+export interface RatingFromMutations {
+  insertedId?: string | null;
+  insertedCount?: string | null;
+}
+
+export interface DeleteActivityRating {
+  deletedCount?: string | null;
+}
+
+export interface UpdateActivityRatings {
+  matchedCount?: string | null;
+}
 export interface GetTiersActivityQueryArgs {
   id?: string | null;
 }
@@ -88,6 +119,23 @@ export interface FriendQueryArgs {
 }
 export interface ActivityQueryArgs {
   activityId: string;
+}
+export interface GetUserInfoQueryArgs {
+  userId: string;
+}
+export interface AddActivityRatingsMutationsArgs {
+  activityId: string;
+  friendId: string;
+  itemRatings: string;
+}
+export interface DeleteActivityRatingsMutationsArgs {
+  activityId: string;
+  friendId: string;
+}
+export interface UpdateActivityRatingsMutationsArgs {
+  activityId: string;
+  friendId: string;
+  itemRatings: string;
 }
 
 export namespace QueryResolvers {
@@ -99,6 +147,7 @@ export namespace QueryResolvers {
     >;
     friend?: FriendResolver<Friend | null, any, Context>;
     activity?: ActivityResolver<Activity | null, any, Context>;
+    getUserInfo?: GetUserInfoResolver<UserInfo | null, any, Context>;
   }
 
   export type GetTiersActivityResolver<
@@ -126,6 +175,15 @@ export namespace QueryResolvers {
   > = Resolver<R, Parent, Context, ActivityArgs>;
   export interface ActivityArgs {
     activityId: string;
+  }
+
+  export type GetUserInfoResolver<
+    R = UserInfo | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context, GetUserInfoArgs>;
+  export interface GetUserInfoArgs {
+    userId: string;
   }
 }
 
@@ -240,7 +298,7 @@ export namespace ActivityResolvers {
     ratingType?: RatingTypeResolver<string, any, Context>;
     items?: ItemsResolver<ActivityItem[], any, Context>;
     activityRatings?: ActivityRatingsResolver<
-      RatingWithFriendInfo[],
+      RatingWithFriendInfoQuery[],
       any,
       Context
     >;
@@ -267,7 +325,7 @@ export namespace ActivityResolvers {
     Context = any
   > = Resolver<R, Parent, Context>;
   export type ActivityRatingsResolver<
-    R = RatingWithFriendInfo[],
+    R = RatingWithFriendInfoQuery[],
     Parent = any,
     Context = any
   > = Resolver<R, Parent, Context>;
@@ -291,7 +349,7 @@ export namespace ActivityItemResolvers {
   >;
 }
 
-export namespace RatingWithFriendInfoResolvers {
+export namespace RatingWithFriendInfoQueryResolvers {
   export interface Resolvers<Context = any> {
     activityId?: ActivityIdResolver<string, any, Context>;
     friendId?: FriendIdResolver<string, any, Context>;
@@ -333,6 +391,162 @@ export namespace FriendRatingResolvers {
     Context = any
   > = Resolver<R, Parent, Context>;
   export type RatingResolver<
+    R = string | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace UserInfoResolvers {
+  export interface Resolvers<Context = any> {
+    id?: IdResolver<string, any, Context>;
+    username?: UsernameResolver<string, any, Context>;
+    firstName?: FirstNameResolver<string | null, any, Context>;
+    lastName?: LastNameResolver<string | null, any, Context>;
+    image?: ImageResolver<string | null, any, Context>;
+    myActivities?: MyActivitiesResolver<(string | null)[] | null, any, Context>;
+    friendActivities?: FriendActivitiesResolver<
+      (string | null)[] | null,
+      any,
+      Context
+    >;
+    pendingActivities?: PendingActivitiesResolver<
+      (string | null)[] | null,
+      any,
+      Context
+    >;
+  }
+
+  export type IdResolver<R = string, Parent = any, Context = any> = Resolver<
+    R,
+    Parent,
+    Context
+  >;
+  export type UsernameResolver<
+    R = string,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+  export type FirstNameResolver<
+    R = string | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+  export type LastNameResolver<
+    R = string | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+  export type ImageResolver<
+    R = string | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+  export type MyActivitiesResolver<
+    R = (string | null)[] | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+  export type FriendActivitiesResolver<
+    R = (string | null)[] | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+  export type PendingActivitiesResolver<
+    R = (string | null)[] | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace MutationsResolvers {
+  export interface Resolvers<Context = any> {
+    addActivityRatings?: AddActivityRatingsResolver<
+      RatingFromMutations | null,
+      any,
+      Context
+    >;
+    deleteActivityRatings?: DeleteActivityRatingsResolver<
+      DeleteActivityRating | null,
+      any,
+      Context
+    >;
+    updateActivityRatings?: UpdateActivityRatingsResolver<
+      UpdateActivityRatings | null,
+      any,
+      Context
+    >;
+  }
+
+  export type AddActivityRatingsResolver<
+    R = RatingFromMutations | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context, AddActivityRatingsArgs>;
+  export interface AddActivityRatingsArgs {
+    activityId: string;
+    friendId: string;
+    itemRatings: string;
+  }
+
+  export type DeleteActivityRatingsResolver<
+    R = DeleteActivityRating | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context, DeleteActivityRatingsArgs>;
+  export interface DeleteActivityRatingsArgs {
+    activityId: string;
+    friendId: string;
+  }
+
+  export type UpdateActivityRatingsResolver<
+    R = UpdateActivityRatings | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context, UpdateActivityRatingsArgs>;
+  export interface UpdateActivityRatingsArgs {
+    activityId: string;
+    friendId: string;
+    itemRatings: string;
+  }
+}
+
+export namespace RatingFromMutationsResolvers {
+  export interface Resolvers<Context = any> {
+    insertedId?: InsertedIdResolver<string | null, any, Context>;
+    insertedCount?: InsertedCountResolver<string | null, any, Context>;
+  }
+
+  export type InsertedIdResolver<
+    R = string | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+  export type InsertedCountResolver<
+    R = string | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace DeleteActivityRatingResolvers {
+  export interface Resolvers<Context = any> {
+    deletedCount?: DeletedCountResolver<string | null, any, Context>;
+  }
+
+  export type DeletedCountResolver<
+    R = string | null,
+    Parent = any,
+    Context = any
+  > = Resolver<R, Parent, Context>;
+}
+
+export namespace UpdateActivityRatingsResolvers {
+  export interface Resolvers<Context = any> {
+    matchedCount?: MatchedCountResolver<string | null, any, Context>;
+  }
+
+  export type MatchedCountResolver<
     R = string | null,
     Parent = any,
     Context = any
