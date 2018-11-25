@@ -25,7 +25,6 @@ interface TierTableProps {
   location: {
     search: string;
   };
-  userId: string;
   userInfo: UserInfo;
 }
 
