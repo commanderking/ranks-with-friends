@@ -19,7 +19,7 @@ interface TierTableEditProps {
 class TierTableEditContainer extends React.Component<TierTableEditProps, null> {
   render() {
     const { match, userInfo } = this.props;
-    const { id: userId } = userInfo;
+    const userId = userInfo ? userInfo.id : null;
     const activityId = match.params.activityId;
 
     return (
@@ -27,7 +27,7 @@ class TierTableEditContainer extends React.Component<TierTableEditProps, null> {
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
-
+          if (!userId) return <p>Cannot edit without userId</p>;
           return (
             <TierTableEdit
               data={data}

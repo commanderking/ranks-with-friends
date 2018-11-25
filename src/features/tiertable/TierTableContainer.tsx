@@ -69,7 +69,6 @@ class TierTableContainer extends React.Component<
             ? !userHasRatingsForActivity(data.activity.activityRatings, userId)
             : false;
 
-          console.log("data.activtiy", data.activity);
           if (data && data.activity) {
             return (
               <div
