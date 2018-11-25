@@ -3,7 +3,7 @@ import TierTableEdit from "./components/TierTableEdit";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
 import { UserInfo } from "../../serverTypes/graphql";
-
+import { canUserViewActivity } from "./tierTableUtils";
 interface TierTableEditProps {
   match: {
     params: {
@@ -28,6 +28,8 @@ class TierTableEditContainer extends React.Component<TierTableEditProps, null> {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
           if (!userId) return <p>Cannot edit without userId</p>;
+          if (!canUserViewActivity(activityId, userInfo))
+            return <p>Sorry! You don't have access to this activity.</p>;
           return (
             <TierTableEdit
               data={data}

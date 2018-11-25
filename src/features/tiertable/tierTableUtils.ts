@@ -9,7 +9,11 @@ import {
   ItemWithUserRatingByRating,
   ItemWithUserRatingByRatingAndUnranked
 } from "./TierTableTypes";
-import { Activity, RatingWithFriendInfoQuery } from "../../serverTypes/graphql";
+import {
+  Activity,
+  RatingWithFriendInfoQuery,
+  UserInfo
+} from "../../serverTypes/graphql";
 
 import { tiers, overallTiers, Tiers, OverallTiers } from "../../enums/Tiers";
 
@@ -260,3 +264,11 @@ export const userHasRatingsForActivity = (
   Boolean(
     activityRatings.find(activityRating => activityRating.friendId === userId)
   );
+
+export const getAllAvailableActivitiesForUser = (userInfo: UserInfo) =>
+  userInfo && userInfo.myActivities && userInfo.friendActivities
+    ? [...userInfo.myActivities, ...userInfo.friendActivities]
+    : [];
+
+export const canUserViewActivity = (activityId: string, userInfo: UserInfo) =>
+  getAllAvailableActivitiesForUser(userInfo).includes(activityId);

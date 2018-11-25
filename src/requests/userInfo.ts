@@ -5,6 +5,8 @@ export const GET_USER_INFO = gql`
     getUserInfo(userId: $userId) {
       id
       firstName
+      myActivities
+      friendActivities
     }
   }
 `;
