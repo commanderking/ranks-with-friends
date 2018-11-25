@@ -4,7 +4,10 @@ import TierTable from "./TierTable";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
 import { FriendRating, UserInfo } from "../../serverTypes/graphql";
-import { userHasRatingsForActivity } from "./tierTableUtils";
+import {
+  userHasRatingsForActivity,
+  canUserViewActivity
+} from "./tierTableUtils";
 import StartRatingModal from "./components/StartRatingModal";
 import { css } from "react-emotion";
 import { Link } from "react-router-dom";
@@ -27,11 +30,6 @@ interface TierTableProps {
   };
   userInfo: UserInfo;
 }
-
-// Lin - const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
-// Jeffrey - 5b9d83af36437b9095cc3122
-// Allison - 5b9d83af36437b9095cc3121
-// testUser - 5bf22d3ce7179a56e2124e7b
 
 class TierTableContainer extends React.Component<
   TierTableProps,
@@ -61,7 +59,8 @@ class TierTableContainer extends React.Component<
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
-
+          if (userId && !canUserViewActivity(activityId, userInfo))
+            return <p>Sorry! You don't have access to this activity.</p>;
           // If user doesn't exist, we still want a public facing page so modal should
           // never be open if no userId has been entered into the url
           const isModalOpen = userId
