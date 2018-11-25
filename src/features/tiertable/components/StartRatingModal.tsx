@@ -1,17 +1,20 @@
 import React from "react";
 import Modal from "react-modal";
 import { Link } from "react-router-dom";
+import { UserInfo } from "../../../serverTypes/graphql";
 
 interface RatingConfirmationModalProps {
   isModalOpen: boolean;
   userId: string;
   activityId: string;
+  userInfo: UserInfo;
 }
 
 const StartRatingModal = ({
   isModalOpen,
   userId,
-  activityId
+  activityId,
+  userInfo
 }: RatingConfirmationModalProps) => {
   return (
     <Modal
@@ -31,7 +34,10 @@ const StartRatingModal = ({
         }
       }}
     >
-      <h4>Looks like you've yet to enter your ratings! Let's get started!</h4>
+      {userInfo && userInfo.firstName && <h4>Hey {userInfo.firstName}!</h4>}
+      <h4>
+        Looks like you've yet to enter your ratings, so let's get started!
+      </h4>
 
       <Link
         to={{

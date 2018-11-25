@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import TierTable from "./TierTable";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
-import { FriendRating } from "../../serverTypes/graphql";
+import { FriendRating, UserInfo } from "../../serverTypes/graphql";
 import { userHasRatingsForActivity } from "./tierTableUtils";
 import StartRatingModal from "./components/StartRatingModal";
 import { css } from "react-emotion";
@@ -26,6 +26,7 @@ interface TierTableProps {
     search: string;
   };
   userId: string;
+  userInfo: UserInfo;
 }
 
 // Lin - const MOCK_LOGGED_IN_FRIEND = "5ba4414936437b9095fc6144";
@@ -53,7 +54,8 @@ class TierTableContainer extends React.Component<
   };
 
   render() {
-    const { match, userId } = this.props;
+    const { match, userInfo } = this.props;
+    const userId = (userInfo && userInfo.id) || null;
     const activityId = match.params.activityId;
     return (
       <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
@@ -79,11 +81,14 @@ class TierTableContainer extends React.Component<
                     : ""
                 }
               >
-                <StartRatingModal
-                  isModalOpen={isModalOpen}
-                  userId={userId}
-                  activityId={activityId}
-                />
+                {userId && (
+                  <StartRatingModal
+                    isModalOpen={isModalOpen}
+                    userId={userId}
+                    activityId={activityId}
+                    userInfo={userInfo}
+                  />
+                )}
                 <h1>{data.activity.title}</h1>
                 {userId && (
                   <Link

@@ -2,6 +2,7 @@ import React from "react";
 import TierTableEdit from "./components/TierTableEdit";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
+import { UserInfo } from "../../serverTypes/graphql";
 
 interface TierTableEditProps {
   match: {
@@ -12,12 +13,13 @@ interface TierTableEditProps {
   location: {
     search: string;
   };
-  userId: string;
+  userInfo: UserInfo;
 }
 
 class TierTableEditContainer extends React.Component<TierTableEditProps, null> {
   render() {
-    const { match, userId } = this.props;
+    const { match, userInfo } = this.props;
+    const { id: userId } = userInfo;
     const activityId = match.params.activityId;
     console.log("userId", userId);
 
