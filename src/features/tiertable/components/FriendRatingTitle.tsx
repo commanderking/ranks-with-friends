@@ -1,13 +1,13 @@
 import React from "react";
 import { ACTIVITY_QUERY, DELETE_ACTIVITY_RATING } from "../TierTableQueries";
-import { RatingWithFriendInfo } from "../../../serverTypes/graphql";
+import { RatingWithFriendInfoQuery } from "../../../serverTypes/graphql";
 import { Mutation } from "react-apollo";
 
 const FriendRatingTitle = ({
   activityRating,
   userId
 }: {
-  activityRating: RatingWithFriendInfo;
+  activityRating: RatingWithFriendInfoQuery;
   userId: string;
 }) => {
   const { friendId, activityId, friendInfo } = activityRating;

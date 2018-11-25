@@ -9,7 +9,7 @@ import {
   ItemWithUserRatingByRating,
   ItemWithUserRatingByRatingAndUnranked
 } from "./TierTableTypes";
-import { Activity, RatingWithFriendInfo } from "../../serverTypes/graphql";
+import { Activity, RatingWithFriendInfoQuery } from "../../serverTypes/graphql";
 
 import { tiers, overallTiers, Tiers, OverallTiers } from "../../enums/Tiers";
 
@@ -41,7 +41,7 @@ export const createBookScoresHash = (
   }, {});
   // TODO: abstract reduce functions to make more readable
   const ratingsByItem = activity.activityRatings.reduce(
-    (byItem, activityRating: RatingWithFriendInfo) => {
+    (byItem, activityRating: RatingWithFriendInfoQuery) => {
       const ratingForItem = activityRating.itemRatings.reduce(
         (ratingsByItemForFriend, item) => {
           if (ratingsByItemForFriend[item.itemId]) {
@@ -254,7 +254,7 @@ export const flattenRatedItemsIntoArray = (
 };
 
 export const userHasRatingsForActivity = (
-  activityRatings: Array<RatingWithFriendInfo>,
+  activityRatings: Array<RatingWithFriendInfoQuery>,
   userId: string
 ): boolean =>
   Boolean(
