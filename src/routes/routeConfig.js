@@ -26,22 +26,16 @@ const routes = [
 
 const RouteConfig = () => {
   // This is temporary until we get userId from the backend on login
-  console.log("hey");
-  console.log(window.location);
-  console.log("what");
-  console.log(window.location.search);
   const userId =
     window.location && window.location.search !== ""
       ? queryString.parse(window.location.search).user
       : null;
-  console.log("userId", userId);
   return (
     <Router>
       <div>
         {userId ? (
           <Query query={GET_USER_INFO} variables={{ userId }}>
             {({ loading, error, data }) => {
-              console.log("data", data);
               if (loading) return <p>Loading...</p>;
               if (error) return <p>Error...</p>;
               return routes.map((route, i) => (

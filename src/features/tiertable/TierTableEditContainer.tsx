@@ -21,7 +21,6 @@ class TierTableEditContainer extends React.Component<TierTableEditProps, null> {
     const { match, userInfo } = this.props;
     const { id: userId } = userInfo;
     const activityId = match.params.activityId;
-    console.log("userId", userId);
 
     return (
       <Query query={ACTIVITY_QUERY} variables={{ activityId }}>
