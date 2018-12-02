@@ -3,7 +3,8 @@ import Modal from "react-modal";
 import TierTable from "./TierTable";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
-import { FriendRating, UserInfo } from "../../serverTypes/graphql";
+import { FriendRating } from "../../serverTypes/graphql";
+import { RouteProps } from "../../routes/routeTypes";
 import {
   userHasRatingsForActivity,
   canUserViewActivity
@@ -19,23 +20,8 @@ export interface TierTableState {
   isModalOpen: boolean;
 }
 
-interface TierTableProps {
-  match: {
-    params: {
-      activityId: string;
-    };
-  };
-  location: {
-    search: string;
-  };
-  userInfo: UserInfo;
-}
-
-class TierTableContainer extends React.Component<
-  TierTableProps,
-  TierTableState
-> {
-  constructor(props: TierTableProps) {
+class TierTableContainer extends React.Component<RouteProps, TierTableState> {
+  constructor(props: RouteProps) {
     super(props);
     this.state = {
       itemRatings: [],

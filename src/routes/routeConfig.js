@@ -6,6 +6,8 @@ import { GET_USER_INFO } from "../requests/userInfo";
 
 import TierTableContainer from "../features/tiertable/TierTableContainer";
 import TierTableEditContainer from "../features/tiertable/TierTableEditContainer";
+import ActivityContainer from "../features/activity/ActivityContainer";
+import CreateActivity from "../features/activity/CreateActivity";
 const routes = [
   {
     path: "/",
@@ -13,13 +15,23 @@ const routes = [
     exact: true
   },
   {
-    path: "/activity/:activityId",
+    path: "/activity/ratings/:activityId",
     component: TierTableContainer,
     exact: true
   },
   {
-    path: "/activity/edit/:activityId",
+    path: "/activity/ratings/edit/:activityId",
     component: TierTableEditContainer,
+    exact: true
+  },
+  {
+    path: "/activity",
+    component: ActivityContainer,
+    exact: true
+  },
+  {
+    path: "/activity/create",
+    component: CreateActivity,
     exact: true
   }
 ];
