@@ -2,21 +2,10 @@ import React from "react";
 import TierTableEdit from "./components/TierTableEdit";
 import { Query } from "react-apollo";
 import { ACTIVITY_QUERY } from "./TierTableQueries";
-import { UserInfo } from "../../serverTypes/graphql";
 import { canUserViewActivity } from "./tierTableUtils";
-interface TierTableEditProps {
-  match: {
-    params: {
-      activityId: string;
-    };
-  };
-  location: {
-    search: string;
-  };
-  userInfo: UserInfo;
-}
+import { RouteProps } from "../../routes/routeTypes";
 
-class TierTableEditContainer extends React.Component<TierTableEditProps, null> {
+class TierTableEditContainer extends React.Component<RouteProps, null> {
   render() {
     const { match, userInfo } = this.props;
     const userId = userInfo ? userInfo.id : null;
