@@ -4,29 +4,8 @@ import { RouteProps } from "../../routes/routeTypes";
 import { Mutation } from "react-apollo";
 import { CREATE_ACTIVITY } from "../../requests/activity";
 import { UserInfo } from "../../serverTypes/graphql";
-
-interface ItemObject {
-  [key: string]: {
-    name: string;
-    link: string;
-  };
-}
-
-interface ActivityType {
-  title: string;
-  ratingType: string;
-  description: string;
-  itemInputFieldsCount: number;
-  items: ItemObject;
-}
-
-interface Event {
-  target: {
-    value: string;
-  };
-}
-
-// const renderItemsInput = () => {};
+import { ActivityType, Event } from "./CreateActivityTypes";
+import CreateActivityItemInput from "./components/CreateActivityItemInput";
 
 class CreateActivity extends React.Component<RouteProps, ActivityType> {
   constructor(props: RouteProps) {
@@ -35,7 +14,7 @@ class CreateActivity extends React.Component<RouteProps, ActivityType> {
       title: "",
       ratingType: "Tiers",
       description: "",
-      itemInputFieldsCount: 10,
+      itemInputFieldsCount: 30,
       items: {}
     };
   }
@@ -98,7 +77,6 @@ class CreateActivity extends React.Component<RouteProps, ActivityType> {
       description,
       items: JSON.stringify(itemsForSubmission)
     };
-    console.log("requestParameters", requestParameters);
     createActivity({
       variables: requestParameters
     });
@@ -106,7 +84,6 @@ class CreateActivity extends React.Component<RouteProps, ActivityType> {
 
   render() {
     const { userInfo } = this.props;
-    console.log("userInfo", userInfo);
     const userId = userInfo ? userInfo.id : null;
     const { title, description, itemInputFieldsCount, items } = this.state;
     if (!userId) {
@@ -131,7 +108,6 @@ class CreateActivity extends React.Component<RouteProps, ActivityType> {
           */
         >
           {(createActivity, { loading, data }) => {
-            console.log("loading", loading);
             if (loading) return <p>Loading...</p>;
             return (
               <form
@@ -151,29 +127,14 @@ class CreateActivity extends React.Component<RouteProps, ActivityType> {
                   value={description}
                   onChange={this.handleDescriptionChange}
                 />
-                {_.times(itemInputFieldsCount, index => {
-                  return (
-                    <div>
-                      <div>Item {index}</div>
-                      <label>Item Name</label>
-                      <input
-                        type="text"
-                        value={(items[index] && items[index].name) || ""}
-                        onChange={event => {
-                          this.handleItemNameChange(event, index);
-                        }}
-                      />
-                      <label>Item Link</label>
-                      <input
-                        type="text"
-                        value={(items[index] && items[index].link) || ""}
-                        onChange={event => {
-                          this.handleItemLinkChange(event, index);
-                        }}
-                      />
-                    </div>
-                  );
-                })}
+                {_.times(itemInputFieldsCount, index => (
+                  <CreateActivityItemInput
+                    items={items}
+                    index={index}
+                    handleItemNameChange={this.handleItemNameChange}
+                    handleItemLinkChange={this.handleItemLinkChange}
+                  />
+                ))}
                 <label>Items</label>
                 <button type="submit" value="Submit">
                   Add Activity
