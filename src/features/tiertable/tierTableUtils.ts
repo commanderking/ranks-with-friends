@@ -31,18 +31,22 @@ export const getOverallRankingFromScore = (
 export const createBookScoresHash = (
   activity: Activity
 ): RatingsPerCategoryType => {
+  console.log("activity", activity);
   const namesByItem = activity.items.reduce((accumulator, item) => {
     return {
       ...accumulator,
       [item.itemId]: {
         id: item.itemId,
         name: item.name,
+        link: item.link || null,
         friendRatings: {}
       }
     };
 
     return accumulator;
   }, {});
+  console.log("namesByItem", namesByItem);
+
   // TODO: abstract reduce functions to make more readable
   const ratingsByItem = activity.activityRatings.reduce(
     (byItem, activityRating: RatingWithFriendInfoQuery) => {
