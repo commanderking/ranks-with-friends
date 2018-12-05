@@ -37,12 +37,12 @@ export const createBookScoresHash = (
       [item.itemId]: {
         id: item.itemId,
         name: item.name,
+        link: item.link || null,
         friendRatings: {}
       }
     };
-
-    return accumulator;
   }, {});
+
   // TODO: abstract reduce functions to make more readable
   const ratingsByItem = activity.activityRatings.reduce(
     (byItem, activityRating: RatingWithFriendInfoQuery) => {

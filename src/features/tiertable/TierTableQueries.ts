@@ -6,9 +6,11 @@ export const ACTIVITY_QUERY = gql`
       id
       title
       ratingType
+      description
       items {
         itemId
         name
+        link
       }
       activityRatings {
         activityId

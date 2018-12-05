@@ -41,7 +41,7 @@ const StartRatingModal = ({
 
       <Link
         to={{
-          pathname: `/activity/edit/${activityId}`,
+          pathname: `/activity/ratings/edit/${activityId}`,
           search: `?user=${userId}`
         }}
       >

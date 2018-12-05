@@ -29,13 +29,6 @@ class TierTableContainer extends React.Component<RouteProps, TierTableState> {
     };
   }
 
-  setRating = ({ itemId, rating }: FriendRating) => {
-    const newItemRatings = [...this.state.itemRatings, { itemId, rating }];
-    this.setState({
-      itemRatings: newItemRatings
-    });
-  };
-
   render() {
     const { match, userInfo } = this.props;
     const userId = (userInfo && userInfo.id) || null;
@@ -54,6 +47,7 @@ class TierTableContainer extends React.Component<RouteProps, TierTableState> {
             : false;
 
           if (data && data.activity) {
+            const { title, description } = data.activity;
             return (
               <div
                 className={
@@ -72,22 +66,19 @@ class TierTableContainer extends React.Component<RouteProps, TierTableState> {
                     userInfo={userInfo}
                   />
                 )}
-                <h1>{data.activity.title}</h1>
+                <h1>{title}</h1>
+                {description && <p>{description}</p>}
                 {userId && (
                   <Link
                     to={{
-                      pathname: `/activity/edit/${activityId}`,
+                      pathname: `/activity/ratings/edit/${activityId}`,
                       search: `?user=${userId}`
                     }}
                   >
                     <button>Edit Ratings</button>
                   </Link>
                 )}
-                <TierTable
-                  data={data}
-                  setRating={this.setRating}
-                  userId={userId}
-                />
+                <TierTable data={data} userId={userId} />
               </div>
             );
           }

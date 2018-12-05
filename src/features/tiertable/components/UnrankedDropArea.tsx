@@ -46,7 +46,11 @@ const UnrankedDropArea = ({ unrankedItems }: any) => {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <DraggableTile>{item.name}</DraggableTile>
+                            <DraggableTile>
+                              <a href={item.link} target="_blank">
+                                {item.name}
+                              </a>
+                            </DraggableTile>
                           </div>
                         )}
                       </Draggable>

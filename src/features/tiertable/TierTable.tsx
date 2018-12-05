@@ -1,24 +1,27 @@
 import React from "react";
 import Table from "rc-table";
 import { toTableData, getNumericOverallScoreRating } from "./tierTableUtils";
-import {
-  Activity,
-  RatingWithFriendInfoQuery,
-  FriendRating
-} from "../../serverTypes/graphql";
+import { Activity, RatingWithFriendInfoQuery } from "../../serverTypes/graphql";
 import FriendRatingTitle from "./components/FriendRatingTitle";
 
-const createColumns = (
-  activity: Activity,
-  setRating: (friendRating: FriendRating) => void,
-  userId: string
-) => [
+const createColumns = (activity: Activity, userId: string) => [
   {
     dataIndex: "name",
     key: "name",
     title: "",
-    render: (value: string) => {
-      return <div style={{ textAlign: "right", padding: "10px" }}>{value}</div>;
+    render: (value: string, record: any) => {
+      console.log("record", record);
+      return (
+        <div style={{ textAlign: "right", padding: "10px" }}>
+          {record.link ? (
+            <a href={record.link} target="_blank">
+              {value}
+            </a>
+          ) : (
+            <span>{value}</span>
+          )}
+        </div>
+      );
     }
   },
   {
@@ -86,11 +89,11 @@ const createColumns = (
 ];
 
 // TODO: Create new type for data with Activity as property value
-const TierTable = ({ data, setRating, userId }: any) => {
+const TierTable = ({ data, userId }: any) => {
   return (
     <div>
       <Table
-        columns={createColumns(data.activity, setRating, userId)}
+        columns={createColumns(data.activity, userId)}
         data={toTableData(data.activity)}
       />
     </div>
