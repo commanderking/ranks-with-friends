@@ -37,7 +37,7 @@ const RatingConfirmationModal = ({
 
       <Link
         to={{
-          pathname: `/activity/${activityId}`,
+          pathname: `/activity/ratings/${activityId}`,
           search: `?user=${userId}`
         }}
       >
