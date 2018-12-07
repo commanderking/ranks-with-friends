@@ -7,9 +7,11 @@ import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
 import RouteConfig from "./routes/routeConfig";
 
-// TODO: Update client based on graphql url
 const client = new ApolloClient({
-  uri: "https://ranks-with-friends-server.herokuapp.com/graphql"
+  uri:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:4000/graphql"
+      : "https://ranks-with-friends-server.herokuapp.com/graphql"
 });
 
 class App extends Component {
