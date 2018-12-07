@@ -9,7 +9,7 @@ import RouteConfig from "./routes/routeConfig";
 
 const client = new ApolloClient({
   uri:
-    process.env.NODE_ENV === "development"
+    process.env.ENVIRONMENT === "development"
       ? "http://localhost:4000/graphql"
       : "https://ranks-with-friends-server.herokuapp.com/graphql"
 });
