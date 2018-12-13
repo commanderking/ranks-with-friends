@@ -71,7 +71,6 @@ class CreateActivity extends React.Component<RouteProps, ActivityType> {
       []
     );
     const requestParameters = {
-      friendId: userInfo.id,
       title,
       ratingType,
       description,
